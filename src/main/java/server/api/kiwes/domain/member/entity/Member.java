@@ -1,12 +1,14 @@
 package server.api.kiwes.domain.member.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.category.entity.Category;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.language.entity.Language;
+import server.api.kiwes.domain.member.constant.Role;
 import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.global.entity.Gender;
@@ -24,8 +26,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class Member extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long id;
 
@@ -35,6 +39,10 @@ public class Member extends BaseTimeEntity {
     private String birth;                   // 생년월일
     private String introduction;            // 자기소개
     private Nationality nationality;        // 국적 (한국, 외국)
+    private String email;                    // 이메일
+    @Enumerated(EnumType.STRING)
+    private Role role;                      // security
+    private Boolean isDeleted;
 
     @ManyToMany
     @JoinTable(name = "MEMBER_LANGUAGE",
@@ -64,4 +72,17 @@ public class Member extends BaseTimeEntity {
             inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
     private List<Category> categories = new ArrayList<>();
 
+    public Member(String email, String profileImg, Gender gender) {
+        this.email = email;
+        this.profileImg = profileImg;
+        this.gender = gender;
+    }
+
+    public void setMember(String nickname, String birth, String introduction,String nationality) {
+        this.nickname = nickname;
+        this.birth = birth;
+        this.introduction = introduction;
+        this.nationality = Nationality.valueOf(nationality);
+    }
 }
+
