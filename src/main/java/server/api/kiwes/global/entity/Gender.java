@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Gender {
-    MALE("MALE"),
-    FEMALE("FEMALE"),
-    ALL("ALL"),
+    MALE("MALE","male"),
+    FEMALE("FEMALE","female"),
+    ALL("ALL","all"),
     ;
 
     private final String name;
+    private final String kakao;
 }
