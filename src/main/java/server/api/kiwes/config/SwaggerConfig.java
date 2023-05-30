@@ -20,7 +20,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("KiWES API")
                 .version("1.0.0")
-                .description("KiWES API Docs \n API 테스트시 헤더에 \"Bearer\" 를 입력하고 access token을 입력해야 합니다.\n")
+                .description("KiWES API Docs\n")
                 .build();
     }
 
@@ -30,7 +30,7 @@ public class SwaggerConfig {
                 .consumes(getConsumeContentTypes())
                 .produces(getProduceContentTypes())
                 .apiInfo(swaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("server.api.kiwes.controller"))
+                .apis(RequestHandlerSelectors.basePackage("server.api.kiwes"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false);

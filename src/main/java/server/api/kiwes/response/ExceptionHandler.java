@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(BizException.class)
-    public ResponseEntity<ResponseMessage> bizException(BizException e){
-        return new ResponseEntity<>(ResponseMessage.create(e.getBaseExceptionType()), e.getBaseExceptionType().getHttpStatus());
+    public ResponseEntity<ApiResponse> bizException(BizException e){
+        return new ResponseEntity<>(ApiResponse.of(e.getBaseExceptionType()), e.getBaseExceptionType().getHttpStatus());
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseMessage> notResolvedException(Exception e){
+    public ResponseEntity<ApiResponse> notResolvedException(Exception e){
         log.error("[{}] - {}", e.getStackTrace()[0], e.getMessage());
-        return new ResponseEntity<>(ResponseMessage.create(InternalServerExceptionType.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ApiResponse.of(InternalServerExceptionType.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

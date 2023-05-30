@@ -27,15 +27,11 @@ public class MemberKakaoService {
     public JsonObject connectKakao(String reqURL, String token) {
         try {
             URL url = new URL(reqURL);
-            System.out.println(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
-            conn.setDoOutput(true);
             conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
-//
-            System.out.println(conn.getResponseCode());
-            System.out.println(conn.getResponseMessage());
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;

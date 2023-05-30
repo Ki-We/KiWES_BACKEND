@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MemberServiceMessage {
 
-    LOGIN_URL("https://kapi.kakao.com/v2/user/me?secure_resource=true"),
+    LOGIN_URL("https://kapi.kakao.com/v2/user/me"),
     LOGOUT_URL("https://kapi.kakao.com/v1/user/logout"),
     DELETE_URL("https://kapi.kakao.com/v1/user/unlink"),
     KAKAO_ACOUNT("kakao_account"),

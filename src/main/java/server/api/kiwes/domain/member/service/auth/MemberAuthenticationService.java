@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
-import server.api.kiwes.domain.member.dto.LoginRequest;
 import server.api.kiwes.domain.member.dto.LoginResponse;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
@@ -46,10 +45,9 @@ public class MemberAuthenticationService {
     private final TokenProvider tokenProvider;
 
 
-    public LoginResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(String token) {
 
         // access token 으로 사용자 정보 가져오기
-        String token = loginRequest.getToken();
         JsonObject memberInfo = kakaoService.connectKakao(LOGIN_URL.getValue(), token);
         Member member = saveMember(kakaoService.getEmail(memberInfo), kakaoService.getProfileUrl(memberInfo), kakaoService.getGender(memberInfo));
         boolean isSignedUp = member.getNickname() != null;
@@ -62,8 +60,6 @@ public class MemberAuthenticationService {
         //3. JWT 토큰 생성
         TokenInfoResponse tokenInfoResponse = tokenProvider.createToken(auth, isSignedUp, member.getId());
         return LoginResponse.from(tokenInfoResponse, isSignedUp ? LOGIN_SUCCESS.getMessage() : SIGN_UP_ING.getMessage(), member.getId());
-
-
 
     }
 
@@ -93,7 +89,7 @@ public class MemberAuthenticationService {
 
         Member member = new Member(email,profileImg, Gender.valueOf(gender));
         // 가입 여부 확인
-        if(!memberRepository.findNotDeletedByEmail(email).isPresent()) {
+        if(memberRepository.findNotDeletedByEmail(email).isEmpty()) {
             memberRepository.save(member);
         }
         return memberRepository.findNotDeletedByEmail(email).get();
@@ -107,7 +103,7 @@ public class MemberAuthenticationService {
     }
 
     public OAuth2User createOAuth2UserByMember(List<GrantedAuthority> authorities, Member member) {
-        Map memberMap = new HashMap<String, String>();
+        Map<String, Object> memberMap = new HashMap<>();
         memberMap.put("email", member.getEmail());
         memberMap.put("profileImg", member.getProfileImg());
         memberMap.put("nickname", member.getNickname());
@@ -128,13 +124,12 @@ public class MemberAuthenticationService {
      */
 
     private OAuth2User createOAuth2UserByJson(List<GrantedAuthority> authorities, JsonObject userInfo, String email) {
-        Map memberMap = new HashMap<String, String>();
+        Map<String, Object> memberMap = new HashMap<>();
         memberMap.put("email", email);
         memberMap.put("profileUrl", kakaoService.getProfileUrl(userInfo));
         memberMap.put("gender", kakaoService.getGender(userInfo));
         authorities.add(new SimpleGrantedAuthority(String.valueOf(ROLE_USER)));
-        OAuth2User userDetails = new DefaultOAuth2User(authorities, memberMap, "email");
-        return userDetails;
+        return new DefaultOAuth2User(authorities, memberMap, "email");
     }
 
 

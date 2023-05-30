@@ -2,7 +2,6 @@ package server.api.kiwes.base.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import server.api.kiwes.base.dto.FooDto;
 import server.api.kiwes.response.BizException;
-import server.api.kiwes.response.ResponseMessage;
+import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.foo.FooResponseType;
 import server.api.kiwes.base.service.FooService;
 
@@ -37,11 +36,11 @@ public class FooController {
      */
     @ApiOperation(value = "요청 예시", notes = "요청 예시입니다!\nname에 \"error\" : controller에서 error 처리하는 경우\ntitle에 \"error\" : service에서 error 처리하는 경우")
     @ApiResponses({
-            @ApiResponse(code = 20001, message = "Foo 객체 정상 리턴 (200 OK)"),
-            @ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
+            @io.swagger.annotations.ApiResponse(code = 20001, message = "Foo 객체 정상 리턴 (200 OK)"),
+            @io.swagger.annotations.ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
     })
     @GetMapping("/foo")
-    public ResponseEntity<ResponseMessage> getFoo(
+    public ResponseEntity<ApiResponse> getFoo(
             @Parameter(name = "name", description = "String", in = QUERY, required = false) @RequestParam(required = false) String name,
             @Parameter(name = "title", description = "String", in = QUERY, required = false) @RequestParam String title
     ){
@@ -60,6 +59,6 @@ public class FooController {
         log.info(FooResponseType.FOO_CREATE_SUCCESS.getMessage());
 
         // 응답해줄 데이터가 있으면 create() 함수의 두번째 인자에 Dto를 담아준다.
-        return new ResponseEntity<>(ResponseMessage.create(FooResponseType.FOO_CREATE_SUCCESS, fooDto), FooResponseType.FOO_CREATE_SUCCESS.getHttpStatus());
+        return new ResponseEntity<>(ApiResponse.of(FooResponseType.FOO_CREATE_SUCCESS, fooDto), FooResponseType.FOO_CREATE_SUCCESS.getHttpStatus());
     }
 }
