@@ -49,8 +49,8 @@ public class MemberAuthenticationService {
 
         // access token 으로 사용자 정보 가져오기
         JsonObject memberInfo = kakaoService.connectKakao(LOGIN_URL.getValue(), token);
-        Member member = saveMember(kakaoService.getEmail(memberInfo), kakaoService.getProfileUrl(memberInfo), kakaoService.getGender(memberInfo));
-        boolean isSignedUp = member.getNickname() != null;
+        Member member = saveMember(kakaoService.getEmail(memberInfo), kakaoService.getProfileUrl(memberInfo),kakaoService.getGender(memberInfo));
+        boolean isSignedUp = member.getEmail() != null;
 
         //2. 스프링 시큐리티 처리
         List<GrantedAuthority> authorities = initAuthorities();
@@ -87,12 +87,13 @@ public class MemberAuthenticationService {
 
     public Member saveMember(String email,String profileImg, String gender) {
 
-        Member member = new Member(email,profileImg, Gender.valueOf(gender));
+        Member member = new Member(email,profileImg, Gender.valueOf(gender.toUpperCase()));
         // 가입 여부 확인
-        if(memberRepository.findNotDeletedByEmail(email).isEmpty()) {
+        if (!memberRepository.existsByEmail(member.getEmail())) {
             memberRepository.save(member);
         }
-        return memberRepository.findNotDeletedByEmail(email).get();
+
+        return memberRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("해당 유저가 없습니다."));
 
     }
 
