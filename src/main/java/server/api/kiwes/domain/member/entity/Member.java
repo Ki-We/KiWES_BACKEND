@@ -35,9 +35,11 @@ public class Member extends BaseTimeEntity {
 
     private String profileImg;              // 프로필 이미지 주소
     private String nickname;                // 닉네임
+    @Enumerated(EnumType.STRING)
     private Gender gender;                  // 성별 (남, 여)
     private String birth;                   // 생년월일
     private String introduction;            // 자기소개
+    @Enumerated(EnumType.STRING)
     private Nationality nationality;        // 국적 (한국, 외국)
     private String email;                    // 이메일
     @Enumerated(EnumType.STRING)
