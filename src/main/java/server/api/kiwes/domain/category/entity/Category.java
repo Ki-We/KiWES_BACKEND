@@ -3,8 +3,8 @@ package server.api.kiwes.domain.category.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import server.api.kiwes.domain.club.entity.Club;
-import server.api.kiwes.domain.member.entity.Member;
+import server.api.kiwes.domain.club_category.entity.ClubCategory;
+import server.api.kiwes.domain.member_category.entity.MemberCategory;
 
 import javax.persistence.*;
 
@@ -23,11 +23,11 @@ public class Category {
 
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Club> clubs;
+    @OneToMany(mappedBy = "category")
+    private List<ClubCategory> clubCategories;
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Member> members;
+    @OneToMany(mappedBy = "category")
+    private List<MemberCategory> memberCategories;
 
 
 }
