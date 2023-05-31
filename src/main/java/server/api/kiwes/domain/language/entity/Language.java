@@ -3,8 +3,8 @@ package server.api.kiwes.domain.language.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import server.api.kiwes.domain.club.entity.Club;
-import server.api.kiwes.domain.member.entity.Member;
+import server.api.kiwes.domain.club_language.entity.ClubLanguage;
+import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 
 import javax.persistence.*;
 
@@ -23,9 +23,9 @@ public class Language {
 
     private String name;
 
-    @ManyToMany(mappedBy = "languages")
-    private List<Club> clubs;
+    @OneToMany(mappedBy = "language")
+    private List<ClubLanguage> clubLanguages;
 
-    @ManyToMany(mappedBy = "languages")
-    private List<Member> members;
+    @OneToMany(mappedBy = "language")
+    private List<MemberLanguage> memberLanguages;
 }

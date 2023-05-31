@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
-import server.api.kiwes.domain.category.entity.Category;
-import server.api.kiwes.domain.club.entity.Club;
-import server.api.kiwes.domain.language.entity.Language;
+import server.api.kiwes.domain.heart.entity.Heart;
 import server.api.kiwes.domain.member.constant.Role;
+import server.api.kiwes.domain.member_category.entity.MemberCategory;
+import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.global.entity.Gender;
@@ -16,7 +16,6 @@ import server.api.kiwes.global.entity.Gender;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -42,37 +41,28 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Nationality nationality;        // 국적 (한국, 외국)
     private String email;                    // 이메일
+
     @Enumerated(EnumType.STRING)
     private Role role;                      // security
     private Boolean isDeleted;
 
-    @ManyToMany
-    @JoinTable(name = "MEMBER_LANGUAGE",
-            joinColumns = @JoinColumn(name = "MEMBER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "LANGUAGE_ID"))
-    private List<Language> languages = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "HEART",
-            joinColumns = @JoinColumn(name = "MEMBER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "CLUB_ID")
-    )
-    private List<Club> likeClubs = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<MemberLanguage> languages;
 
     @OneToMany(mappedBy = "member")
-    private List<Review> reviews = new ArrayList<>();
+    private List<Heart> hearts;
+
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews;
 
     @OneToMany(mappedBy = "questioner")
-    private List<Qna> questions = new ArrayList<>();
+    private List<Qna> questions;
 
     @OneToMany(mappedBy = "respondent")
-    private List<Qna> answers = new ArrayList<>();
+    private List<Qna> answers;
 
-    @ManyToMany
-    @JoinTable(name = "MEMBER_CATEGORY",
-            joinColumns = @JoinColumn(name = "MEMBER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
-    private List<Category> categories = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<MemberCategory> categories;
 
     public Member(String email, String profileImg, Gender gender) {
         this.email = email;

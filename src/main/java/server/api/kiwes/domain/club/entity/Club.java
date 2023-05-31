@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
-import server.api.kiwes.domain.category.entity.Category;
+import server.api.kiwes.domain.club_category.entity.ClubCategory;
+import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
-import server.api.kiwes.domain.language.entity.Language;
-import server.api.kiwes.domain.member.entity.Member;
+import server.api.kiwes.domain.heart.entity.Heart;
 import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.global.entity.Gender;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -26,7 +25,6 @@ public class Club extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "CLUB_ID")
     private Long id;
-
 
     private String date;            // 만나는 날짜
     private String dueTo;           // 모집 마감 날짜
@@ -41,27 +39,21 @@ public class Club extends BaseTimeEntity {
     private String location;        // 위치
     private Boolean isActivated;    // 활성화, 비활성화 여부
 
-    @ManyToMany
-    @JoinTable(name = "CLUB_LANGUAGE",
-            joinColumns = @JoinColumn(name = "CLUB_ID"),
-            inverseJoinColumns = @JoinColumn(name = "LANGUAGE_ID"))
-    private List<Language> languages = new ArrayList<>();
+    @OneToMany(mappedBy = "club")
+    private List<ClubLanguage> languages;
 
     @OneToMany(mappedBy = "club")
-    private List<ClubMember> clubMembers = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "likeClubs")
-    private List<Member> likedMembers;
+    private List<ClubMember> members;
 
     @OneToMany(mappedBy = "club")
-    private List<Review> reviews = new ArrayList<>();
+    private List<Heart> hearts;
 
     @OneToMany(mappedBy = "club")
-    private List<Qna> qnas = new ArrayList<>();
+    private List<Review> reviews;
 
-    @ManyToMany
-    @JoinTable(name = "CLUB_CATEGORY",
-            joinColumns = @JoinColumn(name = "CLUB_ID"),
-            inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
-    private List<Category> categories = new ArrayList<>();
+    @OneToMany(mappedBy = "club")
+    private List<Qna> qnas;
+
+    @OneToMany(mappedBy = "club")
+    private List<ClubCategory> categories;
 }
