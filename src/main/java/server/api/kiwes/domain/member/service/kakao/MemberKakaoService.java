@@ -54,7 +54,6 @@ public class MemberKakaoService {
         if (userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("has_email").getAsBoolean()) {
             return userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("email").getAsString();
         }
-        log.info(NOT_FOUND_EMAIL.getMessage());
         throw new BizException(NOT_FOUND_EMAIL);
     }
 

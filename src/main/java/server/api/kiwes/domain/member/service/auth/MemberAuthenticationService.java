@@ -27,8 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static server.api.kiwes.domain.member.constant.MemberResponseType.LOGIN_SUCCESS;
-import static server.api.kiwes.domain.member.constant.MemberResponseType.SIGN_UP_ING;
+import static server.api.kiwes.domain.member.constant.MemberResponseType.*;
 import static server.api.kiwes.domain.member.constant.MemberServiceMessage.LOGIN_URL;
 import static server.api.kiwes.domain.member.constant.Role.ROLE_USER;
 
@@ -81,7 +80,7 @@ public class MemberAuthenticationService {
 
         //4. JWT 토큰 생성
         TokenInfoResponse tokenInfoResponse = tokenProvider.createToken(auth, true, member.getId());
-        return LoginResponse.from(tokenInfoResponse, LOGIN_SUCCESS.getMessage(), member.getId());
+        return LoginResponse.from(tokenInfoResponse, SIGN_UP_SUCCESS.getMessage(), member.getId());
 
     }
 

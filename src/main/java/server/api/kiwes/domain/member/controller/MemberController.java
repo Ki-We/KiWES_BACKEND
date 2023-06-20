@@ -30,7 +30,7 @@ public class MemberController {
      * @return ApiResponse
      * @Author Seungyeon, Jeong
      */
-    @ApiOperation(value = "카카오 로그인", notes = "요청 예시입니다!\nname에 \"error\" : controller에서 error 처리하는 경우\ntitle에 \"error\" : service에서 error 처리하는 경우")
+    @ApiOperation(value = "카카오 로그인", notes = "카카오 로그인 API")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20001, message = "로그인 객체 정상 리턴 (200 OK)"),
             @io.swagger.annotations.ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
@@ -40,9 +40,7 @@ public class MemberController {
             @RequestHeader(name = "Authorization") String token
     ){
 
-        authenticationService.login(token);
-
-        return ApiResponse.of(MemberResponseType.LOGIN_SUCCESS);
+        return ApiResponse.of(MemberResponseType.LOGIN_SUCCESS,authenticationService.login(token));
     }
 
     /**
@@ -57,16 +55,20 @@ public class MemberController {
             @io.swagger.annotations.ApiResponse(code = 20001, message = "Foo 객체 정상 리턴 (200 OK)"),
             @io.swagger.annotations.ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
     })
-    @GetMapping("/additional-info")
-    public ApiResponse<Object> login(
-            @Parameter(name = "추가 정보 입력 객체", description = "회원가입시 추가정보 입력 위한 객체", in = QUERY, required = false) @RequestParam(required = false) AdditionInfoRequest additionInfoRequest
+    @PostMapping("/additional-info")
+    public ApiResponse<Object> signUp(
+            @Parameter(name = "추가 정보 입력 객체", description = "회원가입시 추가정보 입력 위한 객체", in = QUERY, required = false) @RequestBody(required = false) AdditionInfoRequest additionInfoRequest
     ){
+
 
         if (additionInfoRequest == null || additionInfoRequest.equals("error")){
             log.error(FooResponseType.INVALID_PARAMETER.getMessage());
             throw new BizException(FooResponseType.INVALID_PARAMETER);
         }
-        return ApiResponse.of(MemberResponseType.LOGIN_SUCCESS);
+
+        authenticationService.signUp(additionInfoRequest);
+
+        return ApiResponse.of(MemberResponseType.SIGN_UP_SUCCESS);
     }
 
 }
