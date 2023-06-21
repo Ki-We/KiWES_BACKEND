@@ -32,6 +32,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
 
+    @Lob
     private String profileImg;              // 프로필 이미지 주소
     private String nickname;                // 닉네임
     @Enumerated(EnumType.STRING)
@@ -76,6 +77,10 @@ public class Member extends BaseTimeEntity {
         this.birth = birth;
         this.introduction = introduction;
         this.nationality = Nationality.valueOf(nationality);
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 }
 

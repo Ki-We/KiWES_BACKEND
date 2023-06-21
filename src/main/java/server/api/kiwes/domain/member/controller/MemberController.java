@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
+import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
 import server.api.kiwes.global.aws.PreSignedUrlService;
+import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.foo.FooResponseType;
@@ -25,6 +27,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 public class MemberController {
 
     private final MemberAuthenticationService authenticationService;
+    private final MemberService memberService;
     private final PreSignedUrlService preSignedUrlService;
 
     /**
@@ -75,11 +78,11 @@ public class MemberController {
         return ApiResponse.of(MemberResponseType.SIGN_UP_SUCCESS);
     }
 
-    @PostMapping("/presigned")
-    public ApiResponse<Object> presigned(
-            @RequestBody String imageName
+    @PostMapping("/profileImg")
+    public ApiResponse<Object> profileImg(
     ){
-        String path = "profileimg/";
-        return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS,preSignedUrlService.getPreSignedUrl(path, imageName));
+
+        String nickname = memberService.changeProfileImg()+".jpg";
+        return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS,preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
     }
 }
