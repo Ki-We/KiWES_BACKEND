@@ -9,7 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
+import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
+import server.api.kiwes.global.aws.PreSignedUrlService;
+import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.foo.FooResponseType;
@@ -24,9 +27,12 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 public class MemberController {
 
     private final MemberAuthenticationService authenticationService;
+    private final MemberService memberService;
+    private final PreSignedUrlService preSignedUrlService;
 
     /**
      * API
+     *
      * @return ApiResponse
      * @Author Seungyeon, Jeong
      */
@@ -38,13 +44,14 @@ public class MemberController {
     @PostMapping("/auth/kakao")
     public ApiResponse<Object> login(
             @RequestHeader(name = "Authorization") String token
-    ){
+    ) {
 
-        return ApiResponse.of(MemberResponseType.LOGIN_SUCCESS,authenticationService.login(token));
+        return ApiResponse.of(MemberResponseType.LOGIN_SUCCESS, authenticationService.login(token));
     }
 
     /**
      * API
+     *
      * @param additionInfoRequest
      * @return ResponseMessage
      * @Author Seungyeon, Jeong
@@ -58,10 +65,10 @@ public class MemberController {
     @PostMapping("/additional-info")
     public ApiResponse<Object> signUp(
             @Parameter(name = "추가 정보 입력 객체", description = "회원가입시 추가정보 입력 위한 객체", in = QUERY, required = false) @RequestBody(required = false) AdditionInfoRequest additionInfoRequest
-    ){
+    ) {
 
 
-        if (additionInfoRequest == null || additionInfoRequest.equals("error")){
+        if (additionInfoRequest == null || additionInfoRequest.equals("error")) {
             log.error(FooResponseType.INVALID_PARAMETER.getMessage());
             throw new BizException(FooResponseType.INVALID_PARAMETER);
         }
@@ -71,4 +78,11 @@ public class MemberController {
         return ApiResponse.of(MemberResponseType.SIGN_UP_SUCCESS);
     }
 
+    @PostMapping("/profileImg")
+    public ApiResponse<Object> profileImg(
+    ){
+
+        String nickname = memberService.changeProfileImg()+".jpg";
+        return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS,preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
+    }
 }
