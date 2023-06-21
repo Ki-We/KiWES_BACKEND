@@ -11,6 +11,7 @@ public enum MemberResponseType implements BaseResponseType {
 
     LOGIN_SUCCESS(20001,"로그인 성공",HttpStatus.OK),
     SIGN_UP_SUCCESS(20002, "회원가입 성공", HttpStatus.OK),
+    PROFILE_IMG_SUCCESS(20003, "프로필 이미지 업데이트 성공", HttpStatus.OK),
 
     SIGN_UP_ING(40003,"회원가입 진행중", HttpStatus.BAD_REQUEST),
 
