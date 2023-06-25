@@ -26,6 +26,12 @@ public class ClubMember extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    private Boolean isHost;
 
+    private Boolean isHost;
+    private Boolean isApproved;
+
+    @PrePersist
+    public void initIsApproved(){
+        this.isApproved = false;
+    }
 }
