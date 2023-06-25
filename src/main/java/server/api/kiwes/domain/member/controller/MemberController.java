@@ -6,16 +6,22 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
+import server.api.kiwes.domain.member.dto.RefreshTokenRequest;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
 import server.api.kiwes.global.aws.PreSignedUrlService;
+import server.api.kiwes.global.jwt.TokenProvider;
 import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.foo.FooResponseType;
+
+import javax.validation.Valid;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -29,6 +35,7 @@ public class MemberController {
     private final MemberAuthenticationService authenticationService;
     private final MemberService memberService;
     private final PreSignedUrlService preSignedUrlService;
+    private final TokenProvider tokenProvider;
 
     /**
      * API
@@ -80,9 +87,22 @@ public class MemberController {
 
     @PostMapping("/profileImg")
     public ApiResponse<Object> profileImg(
+
     ){
 
         String nickname = memberService.changeProfileImg()+".jpg";
         return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS,preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
     }
+
+    @ApiOperation(value = "토큰 재발급", notes = "토큰을 재발급합니다.")
+    @PostMapping("/auth/refresh")
+    public ApiResponse<Object> tokenRefresh(
+
+            @RequestBody RefreshTokenRequest refreshTokenRequest
+
+    ) {
+        return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS,authenticationService.refreshToken(refreshTokenRequest));
+    }
+
+
 }

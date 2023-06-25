@@ -11,14 +11,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import server.api.kiwes.domain.member.constant.MemberResponseType;
+import server.api.kiwes.domain.member.dto.RefreshTokenRequest;
+import server.api.kiwes.domain.member.dto.RefreshTokenResponse;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 
 import io.jsonwebtoken.io.Decoders;
-import server.api.kiwes.global.dto.TokenInfoResponse;
-import server.api.kiwes.global.jwt.exception.*;
+import server.api.kiwes.domain.member.dto.TokenInfoResponse;
+import server.api.kiwes.domain.member.repository.RefreshTokenRepository;
+import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
+import server.api.kiwes.global.jwt.entity.RefreshToken;
 import server.api.kiwes.global.security.service.CustomUserDetails;
 import server.api.kiwes.response.BizException;
 
@@ -26,6 +31,8 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static server.api.kiwes.domain.member.constant.MemberResponseType.NOT_FOUND_EMAIL;
@@ -41,8 +48,8 @@ public class TokenProvider implements InitializingBean {
     private static final String ADDITIONAL_INFO="isAdditionalInfoProvided";
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-//    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -90,11 +97,15 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-//        refreshTokenRepository.save(refreshToken, userId);
+        refreshTokenRepository.save(refreshToken, userId);
 
         return TokenInfoResponse.from("Bearer", accessToken, refreshToken, refreshTokenValidityTime);
 
     }
+
+
+
+
 
     public boolean getAdditionalInfoProvided(String token){
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();

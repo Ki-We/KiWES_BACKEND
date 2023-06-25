@@ -1,4 +1,4 @@
-package server.api.kiwes.global.aws;
+package server.api.kiwes.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

@@ -31,8 +31,8 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerApi() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
+//        return new Docket(DocumentationType.OAS_30)
                 .consumes(getConsumeContentTypes())
                 .produces(getProduceContentTypes())
                 .apiInfo(swaggerInfo()).select()
@@ -64,6 +64,7 @@ public class SwaggerConfig {
                 .SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .operationSelector(operationContext -> true)
+//                .forPaths(PathSelectors.regex("/api/v1/auth.*"))  // 인증 적용할 URL 패턴 지정
                 .build();
     }
 

@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import server.api.kiwes.global.dto.OAuth2Attribute;
+import server.api.kiwes.domain.member.dto.OAuth2Attribute;
 
 import java.util.Collections;
 
