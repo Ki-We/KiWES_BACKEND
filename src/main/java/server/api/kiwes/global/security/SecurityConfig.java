@@ -58,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/members/auth/kakao").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/members/additional-info").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/members/nickname/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/members/nickname/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/members/auth/refresh").permitAll()
                 .antMatchers("/oauth/kakao/**").permitAll()
                 .anyRequest().authenticated()
