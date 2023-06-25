@@ -1,4 +1,4 @@
-package server.api.kiwes.global.dto;
+package server.api.kiwes.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

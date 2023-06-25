@@ -12,15 +12,15 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
-import server.api.kiwes.domain.member.dto.LoginResponse;
+import server.api.kiwes.domain.member.dto.*;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
+import server.api.kiwes.domain.member.repository.RefreshTokenRepository;
 import server.api.kiwes.domain.member.service.kakao.MemberKakaoService;
 import server.api.kiwes.domain.member.service.validate.MemberValidationService;
-import server.api.kiwes.global.dto.TokenInfoResponse;
 import server.api.kiwes.global.entity.Gender;
 import server.api.kiwes.global.jwt.TokenProvider;
+import server.api.kiwes.response.BizException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ import static server.api.kiwes.domain.member.constant.Role.ROLE_USER;
 public class MemberAuthenticationService {
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private final MemberKakaoService kakaoService;
     private final MemberValidationService validateService;
@@ -82,6 +83,20 @@ public class MemberAuthenticationService {
         TokenInfoResponse tokenInfoResponse = tokenProvider.createToken(auth, true, member.getId());
         return LoginResponse.from(tokenInfoResponse, SIGN_UP_SUCCESS.getMessage(), member.getId());
 
+    }
+
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        //1. refreshToken 검증
+        refreshTokenRepository.findById(refreshTokenRequest.getId()).orElseThrow(() -> new BizException(NOT_FOUND_EMAIL));
+        //2. 새로운 accessToken 재발급
+        //2.1 시큐리티 설정
+        Member member = memberRepository.findById(refreshTokenRequest.getId()).orElseThrow(() -> new BizException(NOT_FOUND_EMAIL));
+        List<GrantedAuthority> authorities = initAuthorities();
+        OAuth2User userDetails = createOAuth2UserByMember(authorities, member);
+        OAuth2AuthenticationToken auth = configureAuthentication(userDetails, authorities);
+        //2.2 JWT 토큰 생성
+        TokenInfoResponse tokenInfoResponse = tokenProvider.createToken(auth, true, member.getId());
+        return RefreshTokenResponse.from(tokenInfoResponse);
     }
 
     public Member saveMember(String email,String profileImg, String gender) {
