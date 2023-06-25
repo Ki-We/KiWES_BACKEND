@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.club_member.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ClubMember extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CLUB_MEMBER_ID")
@@ -26,6 +28,11 @@ public class ClubMember extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    private Boolean isHost;
+
+    @Builder.Default
+    private Boolean isHost = false;
+
+    @Builder.Default
+    private Boolean isApproved = false;
 
 }
