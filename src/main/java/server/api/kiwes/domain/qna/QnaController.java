@@ -48,6 +48,7 @@ public class QnaController {
             @io.swagger.annotations.ApiResponse(code = 41101, message = "qnaID와 일치하는 QnA가 존재하지 않습니다. (404)"),
             @io.swagger.annotations.ApiResponse(code = 41102, message = "기답변된 QnA입니다. (400)"),
             @io.swagger.annotations.ApiResponse(code = 41103, message = "로그인한 사용자가 호스트가 아닙니다. (400)"),
+            @io.swagger.annotations.ApiResponse(code = 41105, message = "삭제된 질문입니다. (400)"),
     })
     @PostMapping("/answer/{clubId}/{qnaId}")
     public ApiResponse<Object> postAnswer(@PathVariable Long clubId, @PathVariable Long qnaId, @RequestBody QnaRequestDto requestDto){
@@ -62,5 +63,20 @@ public class QnaController {
         Qna qna = qnaService.findById(qnaId);
         qnaService.postAnswer(member, qna, requestDto);
         return ApiResponse.of(QnaResponseType.A_POST_SUCCESS);
+    }
+    
+    @ApiOperation(value = "qna 질문 삭제", notes = "삭제된 질문입니다 텍스트로 변환")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21103, message = "qna 질문 삭제 성공"),
+            @io.swagger.annotations.ApiResponse(code = 41104, message = "작성자가 아닙니다. (401)"),
+    })
+    @DeleteMapping("/question/{clubId}/{qnaId}")
+    public ApiResponse<Object> deleteQusetion(@PathVariable Long clubId, @PathVariable Long qnaId){
+        Member member = memberService.getLoggedInMember();
+        Qna qna = qnaService.findById(qnaId);
+
+        qnaService.deleteQuestion(member, qna);
+        return ApiResponse.of(QnaResponseType.Q_DELETE_SUCCESS);
+
     }
 }

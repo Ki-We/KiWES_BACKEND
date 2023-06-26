@@ -5,6 +5,7 @@ import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.qna.constant.QnaAnsweredStatus;
+import server.api.kiwes.domain.qna.constant.QnaDeletedStatus;
 
 import javax.persistence.*;
 
@@ -39,5 +40,9 @@ public class Qna extends BaseTimeEntity {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private QnaAnsweredStatus isAnswered = QnaAnsweredStatus.NO; // 답변의 존재 여부
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private QnaDeletedStatus isDeleted = QnaDeletedStatus.NO;   // 질문 삭제 여부
 
 }
