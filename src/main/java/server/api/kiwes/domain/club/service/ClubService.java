@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.category.entity.Category;
 import server.api.kiwes.domain.category.repository.CategoryRepository;
 import server.api.kiwes.domain.category.type.CategoryType;
+import server.api.kiwes.domain.club.constant.ClubResponseType;
 import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
@@ -20,6 +21,7 @@ import server.api.kiwes.domain.language.language.LanguageRepository;
 import server.api.kiwes.domain.language.type.LanguageType;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.global.entity.Gender;
+import server.api.kiwes.response.BizException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,14 @@ public class ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ClubLanguageRepository clubLanguageRepository;
     private final ClubCategoryRepository clubCategoryRepository;
+
+    /**
+     * club id를 통해 club 정보 불러오기
+     */
+    public Club findById(Long id){
+        return clubRepository.findById(id)
+                .orElseThrow(() -> new BizException(ClubResponseType.CLUB_NOT_EXIST));
+    }
 
     /**
      * club 모집 글 등록
@@ -62,6 +72,13 @@ public class ClubService {
         club.setCategories(getClubCategoryEntities(requestDto.getCategories(), club));
 
         return club.getId();
+    }
+
+    /**
+     * 모임 글 삭제
+     */
+    public void deleteClub(Club club) {
+        clubRepository.delete(club);
     }
 
     /**
