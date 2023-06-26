@@ -1,17 +1,16 @@
 package server.api.kiwes.domain.qna.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.member.entity.Member;
+import server.api.kiwes.domain.qna.constant.QnaAnsweredStatus;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,7 +33,11 @@ public class Qna extends BaseTimeEntity {
 
     private String questionContent;
     private String answerContent;
-    private String qDate;           // 질문 등록 시각
-    private String aDate;           // 답변 등록 시각
+    private String qDate;                 // 질문 등록 시각
+    private String aDate;                 // 답변 등록 시각
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private QnaAnsweredStatus isAnswered = QnaAnsweredStatus.NO; // 답변의 존재 여부
 
 }

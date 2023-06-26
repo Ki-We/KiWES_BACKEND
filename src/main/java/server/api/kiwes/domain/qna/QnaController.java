@@ -7,21 +7,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
+import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.qna.constant.QnaResponseType;
-import server.api.kiwes.domain.qna.dto.QnaQuestionRequestDto;
+import server.api.kiwes.domain.qna.dto.QnaRequestDto;
+import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.qna.service.QnaService;
 import server.api.kiwes.response.ApiResponse;
+import server.api.kiwes.response.BizException;
 
 @Api(tags = "Club-Q&A")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/qna")
+@RequestMapping("/api/v1/qna")
 public class QnaController {
     private final QnaService qnaService;
     private final MemberService memberService;
     private final ClubService clubService;
+    private final ClubMemberService clubMemberService;
     
     @ApiOperation(value = "qna 질문 등록", notes = "")
     @ApiResponses({
@@ -29,11 +33,34 @@ public class QnaController {
             @io.swagger.annotations.ApiResponse(code = 40101, message = "clubId와 일치하는 모임이 존재하지 않습니다. (404)"),
     })
     @PostMapping("/question/{clubId}")
-    public ApiResponse<Object> postQuestion(@PathVariable Long clubId, @RequestBody QnaQuestionRequestDto requestDto){
+    public ApiResponse<Object> postQuestion(@PathVariable Long clubId, @RequestBody QnaRequestDto requestDto){
         Member member = memberService.getLoggedInMember();
         Club club = clubService.findById(clubId);
         qnaService.postQuestion(club, member, requestDto);
 
-        return ApiResponse.of(QnaResponseType.POST_SUCCESS);
+        return ApiResponse.of(QnaResponseType.Q_POST_SUCCESS);
+    }
+
+    @ApiOperation(value = "qna 답변 등록", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21102, message = "qna 답변 등록 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40101, message = "clubId와 일치하는 모임이 존재하지 않습니다. (404)"),
+            @io.swagger.annotations.ApiResponse(code = 41101, message = "qnaID와 일치하는 QnA가 존재하지 않습니다. (404)"),
+            @io.swagger.annotations.ApiResponse(code = 41102, message = "기답변된 QnA입니다. (400)"),
+            @io.swagger.annotations.ApiResponse(code = 41103, message = "로그인한 사용자가 호스트가 아닙니다. (400)"),
+    })
+    @PostMapping("/answer/{clubId}/{qnaId}")
+    public ApiResponse<Object> postAnswer(@PathVariable Long clubId, @PathVariable Long qnaId, @RequestBody QnaRequestDto requestDto){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+
+        Boolean isHost = clubMemberService.getIsHost(club, member);
+        if(!isHost){
+            throw new BizException(QnaResponseType.NOT_HOST);
+        }
+
+        Qna qna = qnaService.findById(qnaId);
+        qnaService.postAnswer(member, qna, requestDto);
+        return ApiResponse.of(QnaResponseType.A_POST_SUCCESS);
     }
 }

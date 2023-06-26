@@ -3,6 +3,6 @@ package server.api.kiwes.domain.qna.dto;
 import lombok.Getter;
 
 @Getter
-public class QnaQuestionRequestDto {
+public class QnaRequestDto {
     String content;
 }
