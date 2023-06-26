@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
 import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
+import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
 import server.api.kiwes.domain.club.service.ClubService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
@@ -28,10 +29,10 @@ public class ClubController {
             @io.swagger.annotations.ApiResponse(code = 20101, message = "모임 모집 작성글 업로드 성공"),
     })
     @PostMapping("/article")
-    public ApiResponse<Object> postClubRecruitmentArticles(@RequestBody ClubArticleRequestDto requestDto){
+    public ApiResponse<ClubIdResponseDto> postClubRecruitmentArticles(@RequestBody ClubArticleRequestDto requestDto){
         Member member = memberService.getLoggedInMember();
-        clubService.saveNewClub(requestDto, member);
+        Long clubId = clubService.saveNewClub(requestDto, member);
 
-        return ApiResponse.of(ClubResponseType.POST_SUCCESS, member.getEmail());
+        return ApiResponse.of(ClubResponseType.POST_SUCCESS, new ClubIdResponseDto(clubId));
     }
 }
