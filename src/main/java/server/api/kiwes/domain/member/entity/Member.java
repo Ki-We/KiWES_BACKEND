@@ -82,5 +82,9 @@ public class Member extends BaseTimeEntity {
     public void setProfileImg(String profileImg) {
         this.profileImg = profileImg;
     }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 }
 

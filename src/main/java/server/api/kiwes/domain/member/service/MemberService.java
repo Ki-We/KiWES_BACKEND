@@ -36,6 +36,15 @@ public class MemberService {
         }
     }
 
+    public String updateIntroduction(String introduction) {
+        Long memberId = SecurityUtils.getLoggedInUser().getId();
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        member.setIntroduction(introduction);
+        memberRepository.save(member);
+
+        return member.getNickname();
+    }
+
 
 
 
