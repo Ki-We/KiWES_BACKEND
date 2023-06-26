@@ -64,6 +64,9 @@ public class ClubService {
         return club.getId();
     }
 
+    /**
+     * 요청으로부터 넘어온 언어코드를 토대로 ClubLanguage 리스트를 만들어 반환
+     */
     private List<ClubLanguage> getClubLanguageEntities(List<String> languageStrings, Club club){
         List<ClubLanguage> clubLanguages = new ArrayList<>();
         for(String languageString : languageStrings){
@@ -79,6 +82,9 @@ public class ClubService {
         return clubLanguages;
     }
 
+    /**
+     * 요청으로부터 넘어온 카테고리코드를 토대로 ClubCategory 리스트를 만들어 반환
+     */
     private List<ClubCategory> getClubCategoryEntities(List<String> categoryStrings, Club club){
         List<ClubCategory> clubCategories = new ArrayList<>();
         for(String categoryString : categoryStrings){
@@ -95,6 +101,9 @@ public class ClubService {
         return clubCategories;
     }
 
+    /**
+     * Club을 처음 생성할 때, 현재 멤버는 호스트 한명 뿐이므로, 호스트 한명만 담는 ClubMember 리스트를 반환
+     */
     private List<ClubMember> getClubMemberEntities(Member member, Club club){
         ClubMember clubMember = ClubMember.builder()
                 .club(club)
