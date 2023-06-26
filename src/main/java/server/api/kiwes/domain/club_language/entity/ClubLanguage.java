@@ -1,7 +1,6 @@
 package server.api.kiwes.domain.club_language.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.language.entity.Language;
 
@@ -10,6 +9,9 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClubLanguage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CLUB_LANGUAGE_ID")
