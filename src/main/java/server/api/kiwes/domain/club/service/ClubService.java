@@ -55,12 +55,12 @@ public class ClubService {
                 .location(requestDto.getLocation())
                 .isActivated(true)
                 .build();
+        clubRepository.save(club);
 
         club.setLanguages(getClubLanguageEntities(requestDto.getLanguages(), club));
         club.setMembers(getClubMemberEntities(member, club));
         club.setCategories(getClubCategoryEntities(requestDto.getCategories(), club));
 
-        clubRepository.save(club);
     }
 
     private List<ClubLanguage> getClubLanguageEntities(List<String> languageStrings, Club club){
