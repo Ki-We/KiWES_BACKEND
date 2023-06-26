@@ -79,4 +79,28 @@ public class QnaController {
         return ApiResponse.of(QnaResponseType.Q_DELETE_SUCCESS);
 
     }
+
+    @ApiOperation(value = "qna 답변 삭제", notes = "답변 삭제")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21104, message = "qna 답변 삭제 성공"),
+            @io.swagger.annotations.ApiResponse(code = 41103, message = "로그인한 사용자가 호스트가 아닙니다. (400)"),
+    })
+    @DeleteMapping("/answer/{clubId}/{qnaId}")
+    public ApiResponse<Object> deleteAnswer(@PathVariable Long clubId, @PathVariable Long qnaId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+
+        Boolean isHost = clubMemberService.getIsHost(club, member);
+        if(!isHost){
+            throw new BizException(QnaResponseType.NOT_HOST);
+        }
+
+        Qna qna = qnaService.findById(qnaId);
+        qnaService.deleteAnswer(member, qna);
+
+        return ApiResponse.of(QnaResponseType.A_DELETE_SUCCESS);
+
+    }
+
+
 }

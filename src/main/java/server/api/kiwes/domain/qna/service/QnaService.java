@@ -43,6 +43,14 @@ public class QnaService {
                 .build());
     }
 
+    /**
+     * 답변 삭제
+     * API를 요청한 사용자가 호스트인지는 컨트롤러에서 검사함
+     * status만 NO로 바꾸고, 테이블 내 필드들을 null로 바꾸지는 않았음.
+     */
+    public void deleteAnswer(Member member, Qna qna) {
+        qna.setIsAnswered(QnaAnsweredStatus.NO);
+    }
 
     /**
      * 기존재하는 qna에 답변 등록
@@ -89,5 +97,6 @@ public class QnaService {
     private String getDateTime(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
     }
+
 
 }
