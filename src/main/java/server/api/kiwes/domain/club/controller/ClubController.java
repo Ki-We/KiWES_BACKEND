@@ -19,7 +19,7 @@ import server.api.kiwes.response.ApiResponse;
 @Api(tags = "Club")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/club")
+@RequestMapping("/api/v1/club")
 public class ClubController {
     private final ClubService clubService;
     private final MemberService memberService;
