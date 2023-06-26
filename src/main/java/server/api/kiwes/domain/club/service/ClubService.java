@@ -75,6 +75,13 @@ public class ClubService {
     }
 
     /**
+     * 모임 글 삭제
+     */
+    public void deleteClub(Club club) {
+        clubRepository.delete(club);
+    }
+
+    /**
      * 요청으로부터 넘어온 언어코드를 토대로 ClubLanguage 리스트를 만들어 반환
      */
     private List<ClubLanguage> getClubLanguageEntities(List<String> languageStrings, Club club){
