@@ -40,7 +40,7 @@ public class ClubService {
      * @param requestDto
      * @param member
      */
-    public void saveNewClub(ClubArticleRequestDto requestDto, Member member) {
+    public Long saveNewClub(ClubArticleRequestDto requestDto, Member member) {
         Gender gender = Gender.valueOf(requestDto.getGender());
 
         Club club = Club.builder()
@@ -61,6 +61,7 @@ public class ClubService {
         club.setMembers(getClubMemberEntities(member, club));
         club.setCategories(getClubCategoryEntities(requestDto.getCategories(), club));
 
+        return club.getId();
     }
 
     private List<ClubLanguage> getClubLanguageEntities(List<String> languageStrings, Club club){
