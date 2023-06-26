@@ -7,6 +7,7 @@ import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 import server.api.kiwes.global.security.util.SecurityUtils;
+import server.api.kiwes.response.BizException;
 
 import javax.transaction.Transactional;
 
@@ -17,6 +18,15 @@ import javax.transaction.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    /**
+     * 로그인된 Member 객체를 리턴하는 함수
+     * @return Member
+     */
+    public Member getLoggedInMember(){
+        return memberRepository.findById(SecurityUtils.getLoggedInUser().getId())
+                .orElseThrow(()-> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
+    }
 
     public String changeProfileImg() {
 
