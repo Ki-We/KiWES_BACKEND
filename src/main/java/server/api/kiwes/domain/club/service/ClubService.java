@@ -166,4 +166,11 @@ public class ClubService {
         }
         clubMemberRepository.delete(clubMember);
     }
+
+    /**
+     * 참여 취소 (지원자가)
+     */
+    public void cancelApplication(ClubMember clubMember) {
+        clubMemberRepository.delete(clubMember);
+    }
 }

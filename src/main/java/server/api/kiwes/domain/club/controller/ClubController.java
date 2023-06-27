@@ -105,6 +105,8 @@ public class ClubController {
     @ApiOperation(value = "모임 신청 거절(삭제)", notes = "")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20106, message = "신청자 거절(삭제) 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40103, message = "호스트가 아니므로 권한 없음 (401)"),
+            @io.swagger.annotations.ApiResponse(code = 40104, message = "모임에 지원한 사용자가 아님 (400)"),
     })
     @DeleteMapping("/application/{clubId}/{memberId}")
     public ApiResponse<Object> denyMember(@PathVariable Long clubId, @PathVariable Long memberId){
@@ -124,4 +126,30 @@ public class ClubController {
 
         return ApiResponse.of(ClubResponseType.DENY_SUCCESS);
     }
+
+    //지원자가 참여 취소
+    @ApiOperation(value = "참여 취소 (지원자)", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20104, message = "참여취소 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40107, message = "호스트는 참여 취소를 할 수 없습니다 (400)"),
+    })
+    @DeleteMapping("/application/{clubId}")
+    public ApiResponse<Object> cancelApplication(@PathVariable Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        ClubMember clubMember = clubMemberService.findByClubAndMember(club, member);
+        if(clubMember == null){
+            throw new BizException(ClubResponseType.NOT_APPLIED);
+        }
+
+        if(clubMember.getIsHost()){
+            throw new BizException(ClubResponseType.HOST_CANNOT_CANCEL);
+        }
+
+        clubService.cancelApplication(clubMember);
+
+        return ApiResponse.of(ClubResponseType.WITHDRAWAL_SUCCESS);
+    }
+
+    //호스트가 승인된 지원자 강퇴
 }
