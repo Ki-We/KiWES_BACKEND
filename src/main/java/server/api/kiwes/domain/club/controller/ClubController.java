@@ -10,6 +10,7 @@ import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
 import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
+import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
@@ -26,7 +27,7 @@ public class ClubController {
     private final MemberService memberService;
     private final ClubMemberService clubMemberService;
 
-    @ApiOperation(value = "모임 글 작성", notes = "날짜 요청 형식 : YYYYMMDD\n location : 위도, 경도\nlocationsKeyword : 짧은 위치 키워드")
+    @ApiOperation(value = "모임 글 작성", notes = "날짜 요청 형식 : YYYYMMDD\n location : 위도, 경도\nlocationsKeyword : 짧은 위치 키워드\nGender: MALE, FEMALE, ALL")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20101, message = "모임 모집 작성글 업로드 성공"),
     })
@@ -55,5 +56,24 @@ public class ClubController {
         clubService.deleteClub(club);
 
         return ApiResponse.of(ClubResponseType.DELETE_SUCCESS);
+    }
+    
+    @ApiOperation(value = "모임 참여 하기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20103, message = "참여 신청 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40102, message = "호스트이거나 이미 참여 신청함"),
+    })
+    @PostMapping("/application/{clubId}")
+    public ApiResponse<Object> signUpClub(@PathVariable Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        ClubMember clubMember = clubMemberService.findByClubAndMember(club, member);
+        if(clubMember != null){
+            throw new BizException(ClubResponseType.ALREADY_APPLIED);
+        }
+
+        clubService.applyClub(member, club);
+
+        return ApiResponse.of(ClubResponseType.APPLICATION_SUCCESS);
     }
 }
