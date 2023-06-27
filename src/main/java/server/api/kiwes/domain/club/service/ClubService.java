@@ -133,4 +133,15 @@ public class ClubService {
 
         return List.of(clubMember);
     }
+
+    /**
+     * 모임 참여 신청
+     * ClubMember 객체는 무조건 없음. 컨트롤러에서 존재하는지 여부 체크하고 넘어옴
+     */
+    public void applyClub(Member member, Club club) {
+        clubMemberRepository.save( ClubMember.builder()
+                .member(member)
+                .club(club)
+                .build());
+    }
 }

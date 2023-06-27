@@ -10,6 +10,7 @@ import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
 import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
+import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
@@ -55,5 +56,24 @@ public class ClubController {
         clubService.deleteClub(club);
 
         return ApiResponse.of(ClubResponseType.DELETE_SUCCESS);
+    }
+    
+    @ApiOperation(value = "모임 참여 하기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20103, message = "참여 신청 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40102, message = "호스트이거나 이미 참여 신청함"),
+    })
+    @PostMapping("/application/{clubId}")
+    public ApiResponse<Object> signUpClub(@PathVariable Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        ClubMember clubMember = clubMemberService.findByClubAndMember(club, member);
+        if(clubMember != null){
+            throw new BizException(ClubResponseType.ALREADY_APPLIED);
+        }
+
+        clubService.applyClub(member, club);
+
+        return ApiResponse.of(ClubResponseType.APPLICATION_SUCCESS);
     }
 }
