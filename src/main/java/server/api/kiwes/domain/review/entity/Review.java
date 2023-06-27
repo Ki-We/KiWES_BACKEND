@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.review.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.club.entity.Club;
@@ -13,6 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Review extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "REVIEW_ID")

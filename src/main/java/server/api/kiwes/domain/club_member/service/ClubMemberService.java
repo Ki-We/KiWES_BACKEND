@@ -8,6 +8,7 @@ import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.member.entity.Member;
 
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,4 +33,13 @@ public class ClubMemberService {
         return clubMember.getIsHost();
     }
 
+    /**
+     * 모임과 멤버 정보로, 해당 사용자가 모임에 승인된 멤버인지 여부를 반환
+     */
+    public Boolean getIsApproved(Club club, Member member){
+        ClubMember clubMember = findByClubAndMember(club, member);
+        if(clubMember == null) return false;
+
+        return clubMember.getIsApproved();
+    }
 }
