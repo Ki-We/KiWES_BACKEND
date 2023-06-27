@@ -23,7 +23,6 @@ public class RefreshTokenRepository {
     }
 
     public void save(String refreshToken, Long userId) {
-        System.out.println("save");
         //동일한 key 값으로 저장하면 value값 updat됨
         redisTemplate.opsForValue().set(String.valueOf(userId), refreshToken, refreshTokenValidityTime, TimeUnit.SECONDS);
     }

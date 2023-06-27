@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.club_language.entity.ClubLanguage;
-import server.api.kiwes.domain.language.type.LanguageType;
 import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 
 import javax.persistence.*;
@@ -22,9 +21,7 @@ public class Language {
     @Column(name = "LANGUAGE_ID")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(unique = true)
-    private LanguageType name;
+    private String name;
 
     @OneToMany(mappedBy = "language")
     private List<ClubLanguage> clubLanguages;

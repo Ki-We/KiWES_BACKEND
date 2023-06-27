@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.club_category.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import server.api.kiwes.domain.category.entity.Category;
 import server.api.kiwes.domain.club.entity.Club;
 
@@ -9,9 +10,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ClubCategory {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CLUB_CATEGORY_ID")

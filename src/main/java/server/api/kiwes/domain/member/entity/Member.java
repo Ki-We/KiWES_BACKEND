@@ -1,6 +1,9 @@
 package server.api.kiwes.domain.member.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.heart.entity.Heart;
 import server.api.kiwes.domain.member.constant.Role;
@@ -23,7 +26,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Getter
 @Builder
-@Setter
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -45,22 +47,22 @@ public class Member extends BaseTimeEntity {
     private Role role;                      // security
     private Boolean isDeleted;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     private List<MemberLanguage> languages;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     private List<Heart> hearts;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "questioner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "questioner")
     private List<Qna> questions;
 
-    @OneToMany(mappedBy = "respondent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "respondent")
     private List<Qna> answers;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member")
     private List<MemberCategory> categories;
 
     public Member(String email, String profileImg, Gender gender) {
@@ -80,11 +82,5 @@ public class Member extends BaseTimeEntity {
     public void setProfileImg(String profileImg) {
         this.profileImg = profileImg;
     }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-
 }
 

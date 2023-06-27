@@ -85,6 +85,14 @@ public class MemberController {
         return ApiResponse.of(MemberResponseType.SIGN_UP_SUCCESS);
     }
 
+    @PostMapping("/profileImg")
+    public ApiResponse<Object> profileImg(
+
+    ){
+
+        String nickname = memberService.changeProfileImg()+".jpg";
+        return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS,preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
+    }
 
     @ApiOperation(value = "토큰 재발급", notes = "토큰을 재발급합니다.")
     @PostMapping("/auth/refresh")
@@ -93,34 +101,7 @@ public class MemberController {
             @RequestBody RefreshTokenRequest refreshTokenRequest
 
     ) {
-        return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS, authenticationService.refreshToken(refreshTokenRequest));
-    }
-
-
-    @ApiOperation(value = "닉네임 중복검사", notes = "중복되는 닉네임이 있는지 검사합니다..")
-    @PostMapping("/nickname")
-    public ApiResponse<Object> nickname(
-            @RequestBody String nickname
-    ) {
-        return ApiResponse.of(MemberResponseType.NICKNAME_DUPLICATE_SUCCESS, memberService.nicknameDuplicateCheck(nickname));
-    }
-
-    @ApiOperation(value = "자기소개 수정", notes = "자기소개를 수정합니다.")
-    @PostMapping("/mypage/introduction")
-    public ApiResponse<Object> introduction(
-            @RequestBody String introduction
-    ) {
-        return ApiResponse.of(MemberResponseType.INTRODUCTION_UPDATE_SUCCESS, memberService.updateIntroduction(introduction));
-    }
-
-    @ApiOperation(value = "프로필 이미지 업로드", notes = "프로필 이미지 변경을 위한 presigned-url 을 받아옵니다.")
-    @GetMapping("mypage/profileImg")
-    public ApiResponse<Object> profileImg(
-
-    ) {
-
-        String nickname = memberService.changeProfileImg() + ".jpg";
-        return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS, preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
+        return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS,authenticationService.refreshToken(refreshTokenRequest));
     }
 
 

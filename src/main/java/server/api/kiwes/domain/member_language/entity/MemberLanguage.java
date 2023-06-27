@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.member_language.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import server.api.kiwes.domain.language.entity.Language;
 import server.api.kiwes.domain.member.entity.Member;
 
@@ -9,9 +10,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class MemberLanguage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_LANGUAGE_ID")
@@ -25,8 +23,4 @@ public class MemberLanguage {
     @JoinColumn(name = "LANGAUGE_ID")
     private Language language;
 
-    public MemberLanguage(Member member, Language language) {
-        this.member = member;
-        this.language = language;
-    }
 }
