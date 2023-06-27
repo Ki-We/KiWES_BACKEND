@@ -151,4 +151,11 @@ public class ClubService {
     public void approveMember(ClubMember clubMember) {
         clubMember.setIsApproved(true);
     }
+
+    /**
+     * 신청자 거절(삭제)
+     */
+    public void denyMember(ClubMember clubMember) {
+        clubMemberRepository.delete(clubMember);
+    }
 }

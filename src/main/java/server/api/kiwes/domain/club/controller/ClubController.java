@@ -101,4 +101,27 @@ public class ClubController {
 
         return ApiResponse.of(ClubResponseType.APPROVE_SUCCESS);
     }
+
+    @ApiOperation(value = "모임 신청 거절(삭제)", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20106, message = "신청자 거절(삭제) 성공"),
+    })
+    @DeleteMapping("/application/{clubId}/{memberId}")
+    public ApiResponse<Object> denyMember(@PathVariable Long clubId, @PathVariable Long memberId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        if(!clubMemberService.findByClubAndMember(club, member).getIsHost()){
+            throw new BizException(ClubResponseType.NOT_HOST);
+        }
+
+        Member applicant = memberService.findById(memberId);
+        ClubMember clubMember = clubMemberService.findByClubAndMember(club, applicant);
+        if(clubMember == null){
+            throw new BizException(ClubResponseType.NOT_APPLIED);
+        }
+
+        clubService.denyMember(clubMember);
+
+        return ApiResponse.of(ClubResponseType.DENY_SUCCESS);
+    }
 }
