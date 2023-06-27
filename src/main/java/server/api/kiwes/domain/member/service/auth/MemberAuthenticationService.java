@@ -12,12 +12,19 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import server.api.kiwes.domain.club.entity.Club;
+import server.api.kiwes.domain.club_language.entity.ClubLanguage;
+import server.api.kiwes.domain.language.entity.Language;
+import server.api.kiwes.domain.language.language.LanguageRepository;
+import server.api.kiwes.domain.language.type.LanguageType;
 import server.api.kiwes.domain.member.dto.*;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 import server.api.kiwes.domain.member.repository.RefreshTokenRepository;
 import server.api.kiwes.domain.member.service.kakao.MemberKakaoService;
 import server.api.kiwes.domain.member.service.validate.MemberValidationService;
+import server.api.kiwes.domain.member_language.entity.MemberLanguage;
+import server.api.kiwes.domain.member_language.repository.MemberLanguageRepository;
 import server.api.kiwes.global.entity.Gender;
 import server.api.kiwes.global.jwt.TokenProvider;
 import server.api.kiwes.response.BizException;
@@ -38,6 +45,9 @@ import static server.api.kiwes.domain.member.constant.Role.ROLE_USER;
 public class MemberAuthenticationService {
 
     private final MemberRepository memberRepository;
+    private final LanguageRepository languageRepository;
+    private final MemberLanguageRepository memberLanguageRepository;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final MemberKakaoService kakaoService;
@@ -49,6 +59,7 @@ public class MemberAuthenticationService {
 
         // access token 으로 사용자 정보 가져오기
         JsonObject memberInfo = kakaoService.connectKakao(LOGIN_URL.getValue(), token);
+        System.out.println(memberInfo.toString());
         Member member = saveMember(kakaoService.getEmail(memberInfo), kakaoService.getProfileUrl(memberInfo),kakaoService.getGender(memberInfo));
         boolean isSignedUp = member.getEmail() != null;
 
@@ -71,7 +82,10 @@ public class MemberAuthenticationService {
         Member member = validateService.validateEmail(authentication.getName());
 
         //2. 추가 정보 저장
-        member.setMember(additionInfoRequest.getNickName(), additionInfoRequest.getBirth(), additionInfoRequest.getIntroduction(),additionInfoRequest.getNationality());
+        member.setMember(additionInfoRequest.getNickName(), additionInfoRequest.getBirth(), additionInfoRequest.getIntroduction(), additionInfoRequest.getNationality());
+
+        //one to many 저장
+        member.setLanguages(getMemberLanguageEntities(additionInfoRequest.getLanguages(), member));
         memberRepository.save(member);
 
         //3. 스프링 시큐리티 처리
@@ -154,6 +168,26 @@ public class MemberAuthenticationService {
         auth.setDetails(userDetails);
         SecurityContextHolder.getContext().setAuthentication(auth);
         return auth;
+    }
+
+    private List<MemberLanguage> getMemberLanguageEntities(List<String> languageStrings, Member member){
+        List<MemberLanguage> memberLanguages = new ArrayList<>();
+        System.out.println(languageStrings);
+
+        for(String languageString : languageStrings){
+            LanguageType type = LanguageType.valueOf(languageString);
+            Language language = languageRepository.findByName(type);
+            System.out.println(language.getId());
+            MemberLanguage memberLanguage = MemberLanguage.builder()
+                    .member(member)
+                    .language(language)
+                    .build();
+            memberLanguageRepository.save(memberLanguage);
+            memberLanguages.add(memberLanguage);
+
+        }
+
+        return memberLanguages;
     }
 
 }
