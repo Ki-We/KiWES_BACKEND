@@ -122,4 +122,6 @@ public class MemberController {
         String nickname = memberService.changeProfileImg() + ".jpg";
         return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS, preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
     }
+
+
 }

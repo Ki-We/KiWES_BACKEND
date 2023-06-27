@@ -1,9 +1,6 @@
 package server.api.kiwes.domain.member.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.heart.entity.Heart;
 import server.api.kiwes.domain.member.constant.Role;
@@ -26,6 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -52,6 +50,7 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Heart> hearts;
+
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
@@ -86,5 +85,7 @@ public class Member extends BaseTimeEntity {
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
     }
+
+
 }
 
