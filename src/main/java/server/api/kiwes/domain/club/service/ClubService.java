@@ -144,4 +144,11 @@ public class ClubService {
                 .club(club)
                 .build());
     }
+
+    /**
+     * 모임 신청자 승인
+     */
+    public void approveMember(ClubMember clubMember) {
+        clubMember.setIsApproved(true);
+    }
 }

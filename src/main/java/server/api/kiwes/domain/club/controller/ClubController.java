@@ -76,4 +76,29 @@ public class ClubController {
 
         return ApiResponse.of(ClubResponseType.APPLICATION_SUCCESS);
     }
+
+    @ApiOperation(value = "모임 신청자 승인", notes = "호스트만이 가능")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20105, message = "모임 참여 승인 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40103, message = "호스트가 아니므로 권한 없음 (401)"),
+            @io.swagger.annotations.ApiResponse(code = 40104, message = "모임에 지원한 사용자가 아님 (400)"),
+    })
+    @PutMapping("/application/{clubId}/{memberId}")
+    public ApiResponse<Object> approveMember(@PathVariable Long clubId, @PathVariable Long memberId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        if(!clubMemberService.findByClubAndMember(club, member).getIsHost()){
+            throw new BizException(ClubResponseType.NOT_HOST);
+        }
+
+        Member applicant = memberService.findById(memberId);
+        ClubMember clubMember = clubMemberService.findByClubAndMember(club, applicant);
+        if(clubMember == null){
+            throw new BizException(ClubResponseType.NOT_APPLIED);
+        }
+
+        clubService.approveMember(clubMember);
+
+        return ApiResponse.of(ClubResponseType.APPROVE_SUCCESS);
+    }
 }
