@@ -18,6 +18,14 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     /**
+     * id로 Review 객체 찾아 반환
+     */
+    public Review findById(Long id){
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new BizException(ReviewResponseType.NOT_EXIST));
+    }
+
+    /**
      * 후기 등록
      */
     public void postReview(Club club, Member member, ReviewRegisterDto registerDto) {
@@ -30,5 +38,13 @@ public class ReviewService {
                 .member(member)
                 .content(registerDto.getContent())
                 .build());
+    }
+
+
+    /**
+     * 후기 수정
+     */
+    public void modifyReview(Member member, Review review, ReviewRegisterDto registerDto) {
+        review.setContent(registerDto.getContent());
     }
 }
