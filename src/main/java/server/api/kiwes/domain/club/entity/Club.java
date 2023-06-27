@@ -62,4 +62,12 @@ public class Club extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClubCategory> categories;
+
+    public void addCurrentPeople(){
+        this.currentPeople++;
+    }
+
+    public void subCurrentPeople(){
+        this.currentPeople--;
+    }
 }

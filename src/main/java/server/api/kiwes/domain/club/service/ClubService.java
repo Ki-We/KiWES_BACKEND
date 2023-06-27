@@ -148,14 +148,22 @@ public class ClubService {
     /**
      * 모임 신청자 승인
      */
-    public void approveMember(ClubMember clubMember) {
+    public void approveMember(ClubMember clubMember, Club club) {
+        if(club.getCurrentPeople() >= club.getMaxPeople()){
+            throw new BizException(ClubResponseType.OVER_THE_LIMIT);
+        }
+
         clubMember.setIsApproved(true);
+        club.addCurrentPeople();
     }
 
     /**
      * 신청자 거절(삭제)
      */
     public void denyMember(ClubMember clubMember) {
+        if(clubMember.getIsApproved()){
+            throw new BizException(ClubResponseType.ALREADY_APPROVED);
+        }
         clubMemberRepository.delete(clubMember);
     }
 }

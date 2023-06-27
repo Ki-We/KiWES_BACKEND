@@ -97,7 +97,7 @@ public class ClubController {
             throw new BizException(ClubResponseType.NOT_APPLIED);
         }
 
-        clubService.approveMember(clubMember);
+        clubService.approveMember(clubMember, club);
 
         return ApiResponse.of(ClubResponseType.APPROVE_SUCCESS);
     }

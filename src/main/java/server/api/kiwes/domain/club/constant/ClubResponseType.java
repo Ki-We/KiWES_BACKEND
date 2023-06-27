@@ -20,6 +20,8 @@ public enum ClubResponseType implements BaseResponseType {
     ALREADY_APPLIED(40102, "호스트이거나 이미 참여신청함.", HttpStatus.BAD_REQUEST),
     NOT_HOST(40103, "호스트가 아님", HttpStatus.UNAUTHORIZED),
     NOT_APPLIED(40104, "모임의 지원한 사용자가 아님", HttpStatus.BAD_REQUEST),
+    OVER_THE_LIMIT(40105, "정원이 초과되었습니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_APPROVED(40106, "이미 승인된 사용자입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final Integer code;
