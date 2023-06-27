@@ -45,21 +45,21 @@ public class Club extends BaseTimeEntity {
     @Builder.Default
     private Boolean isActivated = false;     // 활성화, 비활성화 여부
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY, cascade = CascadeType.ALL )
     private List<ClubLanguage> languages;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClubMember> members;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Heart> hearts;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Qna> qnas;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClubCategory> categories;
 }

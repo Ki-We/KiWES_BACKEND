@@ -55,19 +55,45 @@ public class ReviewController {
             @io.swagger.annotations.ApiResponse(code = 41201, message = "해당 모임에 승인된 멤버가 아님 (400)"),
             @io.swagger.annotations.ApiResponse(code = 41203, message = "ID와 일치하는 후기 없음 (404)"),
             @io.swagger.annotations.ApiResponse(code = 41204, message = "후기의 작성자가 아님 (401)"),
+            @io.swagger.annotations.ApiResponse(code = 41205, message = "해당 리뷰는 이 모임의 것이 아님 (400)"),
     })
     @PutMapping("/{clubId}/{reviewId}")
     public ApiResponse<Object> modifyReview(@RequestBody ReviewRegisterDto registerDto, @PathVariable Long clubId, @PathVariable Long reviewId){
         Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
         Review review = reviewService.findById(reviewId);
+        if(!club.getReviews().contains(review)){
+            throw new BizException(ReviewResponseType.CHECK_PATH);
+        }
 
         if(!Objects.equals(review.getMember().getId(), member.getId())){
             throw new BizException(ReviewResponseType.NOT_AUTHOR);
         }
 
-        reviewService.modifyReview(member, review, registerDto);
+        reviewService.modifyReview(review, registerDto);
 
         return ApiResponse.of(ReviewResponseType.MODIFY_SUCCESS);
+    }
+
+    @ApiOperation(value = "후기 삭제", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21203, message = "후기 삭제 완료"),
+    })
+    @DeleteMapping("/{clubId}/{reviewId}")
+    public ApiResponse<Object> deleteReview( @PathVariable Long clubId, @PathVariable Long reviewId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        Review review = reviewService.findById(reviewId);
+        if(!club.getReviews().contains(review)){
+            throw new BizException(ReviewResponseType.CHECK_PATH);
+        }
+
+        if(!Objects.equals(review.getMember().getId(), member.getId())){
+            throw new BizException(ReviewResponseType.NOT_AUTHOR);
+        }
+
+        reviewService.deleteReview(review);
+        return ApiResponse.of(ReviewResponseType.DELETE_SUCCESS);
     }
 
 }

@@ -47,22 +47,22 @@ public class Member extends BaseTimeEntity {
     private Role role;                      // security
     private Boolean isDeleted;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberLanguage> languages;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Heart> hearts;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "questioner")
+    @OneToMany(mappedBy = "questioner", cascade = CascadeType.ALL)
     private List<Qna> questions;
 
-    @OneToMany(mappedBy = "respondent")
+    @OneToMany(mappedBy = "respondent", cascade = CascadeType.ALL)
     private List<Qna> answers;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberCategory> categories;
 
     public Member(String email, String profileImg, Gender gender) {

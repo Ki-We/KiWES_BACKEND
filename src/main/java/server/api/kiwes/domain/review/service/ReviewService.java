@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.review.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.club.entity.Club;
@@ -44,7 +45,14 @@ public class ReviewService {
     /**
      * 후기 수정
      */
-    public void modifyReview(Member member, Review review, ReviewRegisterDto registerDto) {
+    public void modifyReview(Review review, ReviewRegisterDto registerDto) {
         review.setContent(registerDto.getContent());
+    }
+
+    /**
+     * 후기 삭제
+     */
+    public void deleteReview(Review review) {
+        reviewRepository.deleteById(review.getId());
     }
 }

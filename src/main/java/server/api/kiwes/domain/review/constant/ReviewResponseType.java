@@ -17,6 +17,7 @@ public enum ReviewResponseType implements BaseResponseType {
     ALREADY_POSTED(41202, "사용자가 이미 후기 작성을 하였음", HttpStatus.BAD_REQUEST),
     NOT_EXIST(41203, "ID와 일치하는 후기가 없음", HttpStatus.NOT_FOUND),
     NOT_AUTHOR(41204, "작성자가 아님", HttpStatus.UNAUTHORIZED),
+    CHECK_PATH(41205, "해당 리뷰는 이 모임의 것이 아님", HttpStatus.BAD_REQUEST),
     ;
 
     private final Integer code;
