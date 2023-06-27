@@ -51,7 +51,8 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Heart> hearts;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "questioner", cascade = CascadeType.ALL)

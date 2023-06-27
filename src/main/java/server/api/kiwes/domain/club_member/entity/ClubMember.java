@@ -35,4 +35,8 @@ public class ClubMember extends BaseTimeEntity {
     @Builder.Default
     private Boolean isApproved = false;
 
+    public void setIsApproved(Boolean b){
+        this.isApproved = b;
+    }
+
 }
