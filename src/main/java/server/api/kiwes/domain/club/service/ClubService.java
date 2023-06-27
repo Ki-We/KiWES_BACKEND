@@ -177,7 +177,8 @@ public class ClubService {
     /**
      * 승인된 모임 멤버 강퇴
      */
-    public void kickMember(ClubMember clubApplicant) {
+    public void kickMember(ClubMember clubApplicant, Club club) {
         clubMemberRepository.delete(clubApplicant);
+        club.subCurrentPeople();
     }
 }

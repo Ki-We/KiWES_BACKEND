@@ -180,7 +180,7 @@ public class ClubController {
             throw new BizException(ClubResponseType.NOT_HOST);
         }
 
-        clubService.kickMember(clubApplicant);
+        clubService.kickMember(clubApplicant, club);
         return ApiResponse.of(ClubResponseType.KICK_OUT_SUCCESS);
     }
 }
