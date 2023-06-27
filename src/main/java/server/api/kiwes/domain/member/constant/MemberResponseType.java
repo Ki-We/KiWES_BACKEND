@@ -27,6 +27,7 @@ public enum MemberResponseType implements BaseResponseType {
 
 
 
+
     ;
 
     private final Integer code;

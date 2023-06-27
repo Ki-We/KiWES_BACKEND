@@ -144,4 +144,41 @@ public class ClubService {
                 .club(club)
                 .build());
     }
+
+    /**
+     * 모임 신청자 승인
+     */
+    public void approveMember(ClubMember clubMember, Club club) {
+        if(club.getCurrentPeople() >= club.getMaxPeople()){
+            throw new BizException(ClubResponseType.OVER_THE_LIMIT);
+        }
+
+        clubMember.setIsApproved(true);
+        club.addCurrentPeople();
+    }
+
+    /**
+     * 신청자 거절(삭제)
+     */
+    public void denyMember(ClubMember clubMember) {
+        if(clubMember.getIsApproved()){
+            throw new BizException(ClubResponseType.ALREADY_APPROVED);
+        }
+        clubMemberRepository.delete(clubMember);
+    }
+
+    /**
+     * 참여 취소 (지원자가)
+     */
+    public void cancelApplication(ClubMember clubMember) {
+        clubMemberRepository.delete(clubMember);
+    }
+
+    /**
+     * 승인된 모임 멤버 강퇴
+     */
+    public void kickMember(ClubMember clubApplicant, Club club) {
+        clubMemberRepository.delete(clubApplicant);
+        club.subCurrentPeople();
+    }
 }

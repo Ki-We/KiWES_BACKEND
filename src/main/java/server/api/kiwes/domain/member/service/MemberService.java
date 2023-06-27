@@ -28,6 +28,11 @@ public class MemberService {
                 .orElseThrow(()-> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
     }
 
+    public Member findById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
+    }
+
     public String changeProfileImg() {
 
         Long memberId = SecurityUtils.getLoggedInUser().getId();
