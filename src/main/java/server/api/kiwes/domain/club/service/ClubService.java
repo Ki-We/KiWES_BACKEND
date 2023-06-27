@@ -173,4 +173,11 @@ public class ClubService {
     public void cancelApplication(ClubMember clubMember) {
         clubMemberRepository.delete(clubMember);
     }
+
+    /**
+     * 승인된 모임 멤버 강퇴
+     */
+    public void kickMember(ClubMember clubApplicant) {
+        clubMemberRepository.delete(clubApplicant);
+    }
 }

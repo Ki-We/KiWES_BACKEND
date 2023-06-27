@@ -18,6 +18,8 @@ import server.api.kiwes.domain.qna.constant.QnaResponseType;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
+import java.util.Objects;
+
 @Api(tags = "Club")
 @RestController
 @RequiredArgsConstructor
@@ -127,11 +129,11 @@ public class ClubController {
         return ApiResponse.of(ClubResponseType.DENY_SUCCESS);
     }
 
-    //지원자가 참여 취소
     @ApiOperation(value = "참여 취소 (지원자)", notes = "")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20104, message = "참여취소 성공"),
             @io.swagger.annotations.ApiResponse(code = 40107, message = "호스트는 참여 취소를 할 수 없습니다 (400)"),
+            @io.swagger.annotations.ApiResponse(code = 40104, message = "모임에 지원한 사용자가 아님 (400)"),
     })
     @DeleteMapping("/application/{clubId}")
     public ApiResponse<Object> cancelApplication(@PathVariable Long clubId){
@@ -152,4 +154,33 @@ public class ClubController {
     }
 
     //호스트가 승인된 지원자 강퇴
+    @ApiOperation(value = "승인된 사용자 모임에서 강퇴 (호스트)", notes = "호스트만 요청 가능")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20107, message = "멤버 강퇴 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40103, message = "호스트가 아니므로 권한 없음 (401)"),
+            @io.swagger.annotations.ApiResponse(code = 40104, message = "모임에 지원한 사용자가 아님 (400)"),
+    })
+    @DeleteMapping("/kick/{clubId}/{memberId}")
+    public ApiResponse<Object> kickMember(@PathVariable Long clubId, @PathVariable Long memberId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        Member applicant = memberService.findById(memberId);
+
+        if(Objects.equals(member.getId(), memberId)){
+            throw new BizException(ClubResponseType.HOST_CANNOT_CANCEL);
+        }
+
+        ClubMember clubApplicant = clubMemberService.findByClubAndMember(club, applicant);
+        if(clubApplicant == null){
+            throw new BizException(ClubResponseType.NOT_APPLIED);
+        }
+
+        ClubMember clubHost = clubMemberService.findByClubAndMember(club, member);
+        if(!clubHost.getIsHost()){
+            throw new BizException(ClubResponseType.NOT_HOST);
+        }
+
+        clubService.kickMember(clubApplicant);
+        return ApiResponse.of(ClubResponseType.KICK_OUT_SUCCESS);
+    }
 }
