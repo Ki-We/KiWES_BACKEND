@@ -13,9 +13,12 @@ public enum MemberResponseType implements BaseResponseType {
     SIGN_UP_SUCCESS(20002, "회원가입 성공", HttpStatus.OK),
     PROFILE_IMG_SUCCESS(20003, "프로필 이미지 Presigned URL 발급 완료", HttpStatus.OK),
     TOKEN_REFRESH_SUCCESS(20003, "토큰 재발급을 완료하였습니다", HttpStatus.OK),
+
     VALID_NICKNAME(20004, "사용 가능한 닉네임입니다", HttpStatus.OK),
     NICKNAME_DUPLICATE_SUCCESS(20005, "닉네임 중복체크 완료", HttpStatus.OK),
     INTRODUCTION_UPDATE_SUCCESS(20006, "자기소개 수정 완료", HttpStatus.OK),
+    MYPAGE_LOAD_SUCCESS(20007, "마이페이지 정보 조회 완료", HttpStatus.OK),
+
 
     SIGN_UP_ING(40003,"회원가입 진행중", HttpStatus.BAD_REQUEST),
 

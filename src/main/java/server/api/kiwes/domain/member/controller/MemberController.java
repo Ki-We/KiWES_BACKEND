@@ -23,6 +23,8 @@ import server.api.kiwes.response.foo.FooResponseType;
 
 import javax.validation.Valid;
 
+import java.text.ParseException;
+
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 @RestController
@@ -93,6 +95,9 @@ public class MemberController {
             @RequestBody RefreshTokenRequest refreshTokenRequest
 
     ) {
+
+        return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS,authenticationService.refreshToken(refreshTokenRequest));
+
         return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS, authenticationService.refreshToken(refreshTokenRequest));
     }
 
@@ -113,7 +118,8 @@ public class MemberController {
         return ApiResponse.of(MemberResponseType.INTRODUCTION_UPDATE_SUCCESS, memberService.updateIntroduction(introduction));
     }
 
-    @ApiOperation(value = "프로필 이미지 업로드", notes = "프로필 이미지 변경을 위한 presigned-url 을 받아옵니다.")
+    @ApiOperation(value = "프로필 이미지 수정", notes = "프로필 이미지 변경을 위한 presigned-url 을 받아옵니다.")
+
     @GetMapping("mypage/profileImg")
     public ApiResponse<Object> profileImg(
 
@@ -121,6 +127,15 @@ public class MemberController {
 
         String nickname = memberService.changeProfileImg() + ".jpg";
         return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS, preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
+
+    }
+
+    @ApiOperation(value = "마이페이지 정보 ", notes = "마이페이지 내 정보 가져오기.")
+    @GetMapping("/mypage")
+    public ApiResponse<Object> myPage(
+    ) throws ParseException {
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.myPage());
+
     }
 
 

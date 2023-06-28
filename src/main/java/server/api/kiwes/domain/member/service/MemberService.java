@@ -3,13 +3,19 @@ package server.api.kiwes.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import server.api.kiwes.domain.member.constant.MemberResponseType;
+import server.api.kiwes.domain.member.dto.MyPageResponse;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -58,6 +64,24 @@ public class MemberService {
         memberRepository.save(member);
 
         return member.getNickname();
+    }
+
+    public MyPageResponse myPage() throws ParseException {
+        Long memberId = SecurityUtils.getLoggedInUser().getId();
+        Member member = memberRepository.findById(memberId).orElseThrow();
+
+        String birth = member.getBirth();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date dueToDate = format.parse(birth);
+
+        Date now = new Date();
+
+        long diffInMillis = now.getTime() -  dueToDate.getTime();
+        long diffInYears = diffInMillis / (1000L * 60L * 60L * 24L * 365L);
+
+        //프로필 사진, 닉네임, 국적, 나이, 성별, 소개
+        return new MyPageResponse(member.getProfileImg(), member.getNickname(), member.getNationality().getName(), String.valueOf(diffInYears), member.getGender().getName(), member.getIntroduction());
+
     }
 
 
