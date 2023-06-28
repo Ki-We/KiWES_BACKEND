@@ -29,9 +29,9 @@ public class MemberKakaoService {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+//            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;

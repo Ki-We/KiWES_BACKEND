@@ -3,14 +3,13 @@ package server.api.kiwes.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-<<<<<<< Updated upstream
-=======
+
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.MyPageResponse;
->>>>>>> Stashed changes
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 import server.api.kiwes.global.security.util.SecurityUtils;
+import server.api.kiwes.response.BizException;
 
 import javax.transaction.Transactional;
 import java.text.DateFormat;
@@ -26,6 +25,20 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 로그인된 Member 객체를 리턴하는 함수
+     * @return Member
+     */
+    public Member getLoggedInMember(){
+        return memberRepository.findById(SecurityUtils.getLoggedInUser().getId())
+                .orElseThrow(()-> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
+    }
+
+    public Member findById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
+    }
+
     public String changeProfileImg() {
 
         Long memberId = SecurityUtils.getLoggedInUser().getId();
@@ -36,8 +49,6 @@ public class MemberService {
         return member.getNickname();
     }
 
-<<<<<<< Updated upstream
-=======
     public String nicknameDuplicateCheck(String nickname) {
         if (memberRepository.findNotDeletedByNickname(nickname).isPresent()) {
             return MemberResponseType.EXISTED_NICKNAME.getMessage();
@@ -75,9 +86,5 @@ public class MemberService {
 
 
 
-
-
-
->>>>>>> Stashed changes
 
 }
