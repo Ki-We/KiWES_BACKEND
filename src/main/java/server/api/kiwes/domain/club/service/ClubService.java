@@ -8,6 +8,8 @@ import server.api.kiwes.domain.category.repository.CategoryRepository;
 import server.api.kiwes.domain.category.type.CategoryType;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
 import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
+import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
+import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
@@ -48,7 +50,7 @@ public class ClubService {
     /**
      * club 모집 글 등록
      */
-    public Long saveNewClub(ClubArticleRequestDto requestDto, Member member) {
+    public ClubCreatedResponseDto saveNewClub(ClubArticleRequestDto requestDto, Member member) {
         Gender gender = Gender.valueOf(requestDto.getGender());
 
         Club club = Club.builder()
@@ -68,7 +70,13 @@ public class ClubService {
         club.setMembers(getClubMemberEntities(member, club));
         club.setCategories(getClubCategoryEntities(requestDto.getCategories(), club));
 
-        return club.getId();
+        return ClubCreatedResponseDto.builder()
+                .clubId(club.getId())
+                .clubTitle(club.getTitle())
+                .hostId(member.getId())
+                .hostNickname(member.getNickname())
+                .clubMaxPeople(club.getMaxPeople())
+                .build();
     }
 
     /**
@@ -145,13 +153,20 @@ public class ClubService {
     /**
      * 모임 신청자 승인
      */
-    public void approveMember(ClubMember clubMember, Club club) {
+    public ClubJoinedResponseDto approveMember(ClubMember clubMember, Club club) {
         if(club.getCurrentPeople() >= club.getMaxPeople()){
             throw new BizException(ClubResponseType.OVER_THE_LIMIT);
         }
 
         clubMember.setIsApproved(true);
         club.addCurrentPeople();
+
+        return ClubJoinedResponseDto.builder()
+                .clubId(club.getId())
+                .clubTitle(club.getTitle())
+                .participantId(clubMember.getMember().getId())
+                .participantNickname(clubMember.getMember().getNickname())
+                .build();
     }
 
     /**
