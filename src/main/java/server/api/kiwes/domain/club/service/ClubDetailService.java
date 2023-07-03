@@ -39,6 +39,7 @@ public class ClubDetailService {
         Map<Nationality, Integer> memberNationCountMap = getNationCountFrom(club);
 
         baseInfoDto = ClubArticleBaseInfoDto.builder()
+                .clubId(club.getId())
                 .title(club.getTitle())
                 .thumbnailImageUrl(club.getThumbnailUrl())
                 .heartCount(club.getHearts().size())

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @Builder
 public class ClubArticleReviewDto {
+    Long reviewId;
     String reviewerImageUrl;
     String reviewerNickname;
     String content;
@@ -21,10 +22,12 @@ public class ClubArticleReviewDto {
     public static ClubArticleReviewDto of(Review review){
         Member reviewer = review.getMember();
         return ClubArticleReviewDto.builder()
+                .reviewId(review.getId())
                 .reviewerImageUrl(reviewer.getProfileImg())
                 .reviewerNickname(reviewer.getNickname())
                 .content(review.getContent())
-                .reviewDate(review.getCreatedDate().format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")))
+                .reviewDate(review.getModifiedDate().format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")))
+                .isModified(review.getIsModified())
                 .build();
     }
 
