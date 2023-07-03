@@ -98,7 +98,6 @@ public class MemberController {
 
         return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS,authenticationService.refreshToken(refreshTokenRequest));
 
-        return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS, authenticationService.refreshToken(refreshTokenRequest));
     }
 
 
