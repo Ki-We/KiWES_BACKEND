@@ -59,4 +59,30 @@ public class ClubApprovalService {
                 .waitings(waitings)
                 .build();
     }
+
+    /**
+     * 내가 호스트인 모임 전체 리스트
+     */
+    public List<ClubApprovalRequestSimpleDto> getRequestsResponse(Member member) {
+
+        return clubRepository.findApprovalRequestSimple(member, true);
+    }
+
+    public List<ClubApprovalWaitingSimpleDto> getWaitingsResponse(Member member) {
+        List<ClubApprovalWaitingSimpleDto> waitings = clubRepository.findApprovalWaitingSimple(member, false, false);
+        for(ClubApprovalWaitingSimpleDto waitingSimpleDto : waitings){
+            if(waitingSimpleDto.getIsHeart() == null){
+                waitingSimpleDto.setIsHeart(HeartStatus.NO);
+            }
+
+            List<String> languages = new ArrayList<>();
+            for(ClubLanguage clubLanguage : clubLanguageRepository.findByClubId(waitingSimpleDto.getClubId())){
+                Language language = clubLanguage.getLanguage();
+                languages.add(language.getName().getName());
+            }
+            waitingSimpleDto.setLanguages(languages);
+        }
+
+        return waitings;
+    }
 }
