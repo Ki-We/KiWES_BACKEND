@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ClubArticleBaseInfoDto {
+    Long clubId;
     String title;
     String thumbnailImageUrl;
     Integer heartCount;

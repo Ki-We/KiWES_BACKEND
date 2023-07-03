@@ -47,6 +47,7 @@ public class ReviewService {
      */
     public void modifyReview(Review review, ReviewRegisterDto registerDto) {
         review.setContent(registerDto.getContent());
+        review.setIsModifiedTrue();
     }
 
     /**

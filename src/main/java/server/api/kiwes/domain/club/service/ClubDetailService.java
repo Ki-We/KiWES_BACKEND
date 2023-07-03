@@ -16,7 +16,6 @@ import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.review.entity.Review;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -40,6 +39,7 @@ public class ClubDetailService {
         Map<Nationality, Integer> memberNationCountMap = getNationCountFrom(club);
 
         baseInfoDto = ClubArticleBaseInfoDto.builder()
+                .clubId(club.getId())
                 .title(club.getTitle())
                 .thumbnailImageUrl(club.getThumbnailUrl())
                 .heartCount(club.getHearts().size())
@@ -65,16 +65,14 @@ public class ClubDetailService {
         // qnaDtos 채우기 - 최대 2개
         for(Qna qna : club.getQnas()){
             if(qna.getIsDeleted().equals(QnaDeletedStatus.YES)) continue;
-            ClubArticleQnaDto clubArticleQnaDto = buildClubArticleDtoFrom(qna);
-            qnas.add(clubArticleQnaDto);
+            qnas.add(ClubArticleQnaDto.of(qna));
 
             if(qnas.size() > 2) break;
         }
 
         // reviews 채우기 - 최대 2개
         for(Review review : club.getReviews()){
-            ClubArticleReviewDto clubArticleReviewDto = buildClubArticleReviewDto(review);
-            reviews.add(clubArticleReviewDto);
+            reviews.add(ClubArticleReviewDto.of(review));
 
             if(reviews.size() > 2) break;
         }
@@ -141,38 +139,7 @@ public class ClubDetailService {
         return result;
     }
 
-    /**
-     * qna 객체를 가지고 ClubArticleQnaDto 빌드하기
-     */
-    private ClubArticleQnaDto buildClubArticleDtoFrom(Qna qna){
-        Member questioner = qna.getQuestioner();
-        return ClubArticleQnaDto.builder()
-                .questionerImageUrl(questioner.getProfileImg())
-                .questionerNickname(questioner.getNickname())
-                .questionContent(qna.getQuestionContent())
-                .questionDate(qna.getQDate())
-                .build();
-    }
 
-    /**
-     * Review 객체를 가지고 ClubAtricleReviewDto 빌드하기
-     */
-    private ClubArticleReviewDto buildClubArticleReviewDto(Review review){
-        Member reviewer = review.getMember();
-        return ClubArticleReviewDto.builder()
-                .reviewerImageUrl(reviewer.getProfileImg())
-                .reviewerNickname(reviewer.getNickname())
-                .content(review.getContent())
-                .reviewDate(formatDateTime(review.getCreatedDate()))
-                .build();
-    }
-
-    /**
-     * 명시된 포맷으로 인자로 들어온 시간을 문자열로 리턴하는 함수
-     */
-    private String formatDateTime(LocalDateTime dateTime){
-        return dateTime.format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
-    }
 
     /**
      * 날짜를 Mar 2 의 포맷으로 변경

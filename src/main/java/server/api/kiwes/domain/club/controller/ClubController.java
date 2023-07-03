@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
 import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
+import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
 import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
+import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
@@ -42,14 +44,14 @@ public class ClubController {
             @io.swagger.annotations.ApiResponse(code = 40108, message = "날짜 요청 형식이 잘못 되었습니다. (400)"),
     })
     @PostMapping("/article")
-    public ApiResponse<ClubIdResponseDto> postClubRecruitmentArticles(@RequestBody ClubArticleRequestDto requestDto){
+    public ApiResponse<ClubCreatedResponseDto> postClubRecruitmentArticles(@RequestBody ClubArticleRequestDto requestDto){
         if(!isValidDateFormat(requestDto.getDate()) || !isValidDateFormat(requestDto.getDueTo()))
             throw new BizException(ClubResponseType.INVALID_DATE_FORMAT);
 
         Member member = memberService.getLoggedInMember();
-        Long clubId = clubService.saveNewClub(requestDto, member);
+        ClubCreatedResponseDto response =  clubService.saveNewClub(requestDto, member);
 
-        return ApiResponse.of(ClubResponseType.POST_SUCCESS, new ClubIdResponseDto(clubId));
+        return ApiResponse.of(ClubResponseType.POST_SUCCESS, response);
     }
 
     @ApiOperation(value = "모임 글 삭제", notes = "")
@@ -97,7 +99,7 @@ public class ClubController {
             @io.swagger.annotations.ApiResponse(code = 40104, message = "모임에 지원한 사용자가 아님 (400)"),
     })
     @PutMapping("/application/{clubId}/{memberId}")
-    public ApiResponse<Object> approveMember(@PathVariable Long clubId, @PathVariable Long memberId){
+    public ApiResponse<ClubJoinedResponseDto> approveMember(@PathVariable Long clubId, @PathVariable Long memberId){
         Member member = memberService.getLoggedInMember();
         Club club = clubService.findById(clubId);
         if(!clubMemberService.findByClubAndMember(club, member).getIsHost()){
@@ -110,9 +112,9 @@ public class ClubController {
             throw new BizException(ClubResponseType.NOT_APPLIED);
         }
 
-        clubService.approveMember(clubMember, club);
+        ClubJoinedResponseDto response = clubService.approveMember(clubMember, club);
 
-        return ApiResponse.of(ClubResponseType.APPROVE_SUCCESS);
+        return ApiResponse.of(ClubResponseType.APPROVE_SUCCESS, response);
     }
 
     @ApiOperation(value = "모임 신청 거절(삭제)", notes = "")

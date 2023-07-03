@@ -17,6 +17,7 @@ public enum ClubResponseType implements BaseResponseType {
     DENY_SUCCESS(20106, "멤버 거절 성공", HttpStatus.OK),
     KICK_OUT_SUCCESS(20107, "멤버 강퇴 성공", HttpStatus.OK),
     GET_INFO_SUCCESS(20108, "모임 정보 불러오기 성공", HttpStatus.OK),
+    APPROVAL_LIST_GET_SUCCEED(20109, "승인관련 리스트 리턴 성공", HttpStatus.OK),
 
     CLUB_NOT_EXIST(40101, "clubId와 일치하는 모임이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     ALREADY_APPLIED(40102, "호스트이거나 이미 참여신청함.", HttpStatus.BAD_REQUEST),

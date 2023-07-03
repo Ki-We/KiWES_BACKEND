@@ -30,7 +30,13 @@ public class Review extends BaseTimeEntity {
     @Column(length = 1000)
     private String content;         // 후기 내용
 
+    @Builder.Default
+    private Boolean isModified = false;
     public void setContent(String content){
         this.content = content;
+    }
+
+    public void setIsModifiedTrue(){
+        this.isModified = true;
     }
 }
