@@ -6,15 +6,19 @@ import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.club.dto.ClubApprovalRequestSimpleDto;
 import server.api.kiwes.domain.club.dto.ClubApprovalResponseDto;
 import server.api.kiwes.domain.club.dto.ClubApprovalWaitingSimpleDto;
+import server.api.kiwes.domain.club.dto.ClubWaitingMemberDto;
+import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.club_language.repository.ClubLanguageRepository;
+import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.heart.constant.HeartStatus;
 import server.api.kiwes.domain.language.entity.Language;
 import server.api.kiwes.domain.member.entity.Member;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,6 +26,7 @@ import java.util.List;
 public class ClubApprovalService {
     private final ClubRepository clubRepository;
     private final ClubLanguageRepository clubLanguageRepository;
+    private final ClubMemberRepository clubMemberRepository;
 
     /**
      * 승인 페이지에서 보여질 승인요청, 승인대기 Top 2개 정보 리턴
@@ -84,5 +89,15 @@ public class ClubApprovalService {
         }
 
         return waitings;
+    }
+
+    /**
+     * 해당 모임에서 승인 대기중인 사용자들 정보 리턴
+     */
+    public List<ClubWaitingMemberDto> getClubWaitingPeople(Club club) {
+
+        return clubMemberRepository.findClubMembersWaitingFrom(club, false).stream()
+                .map(ClubWaitingMemberDto::of)
+                .collect(Collectors.toList());
     }
 }
