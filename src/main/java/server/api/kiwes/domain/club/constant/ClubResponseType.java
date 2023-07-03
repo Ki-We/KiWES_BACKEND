@@ -16,6 +16,7 @@ public enum ClubResponseType implements BaseResponseType {
     APPROVE_SUCCESS(20105, "멤버 승인 성공", HttpStatus.OK),
     DENY_SUCCESS(20106, "멤버 거절 성공", HttpStatus.OK),
     KICK_OUT_SUCCESS(20107, "멤버 강퇴 성공", HttpStatus.OK),
+    GET_INFO_SUCCESS(20108, "모임 정보 불러오기 성공", HttpStatus.OK),
 
     CLUB_NOT_EXIST(40101, "clubId와 일치하는 모임이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     ALREADY_APPLIED(40102, "호스트이거나 이미 참여신청함.", HttpStatus.BAD_REQUEST),
@@ -24,6 +25,7 @@ public enum ClubResponseType implements BaseResponseType {
     OVER_THE_LIMIT(40105, "정원이 초과되었습니다.", HttpStatus.BAD_REQUEST),
     ALREADY_APPROVED(40106, "이미 승인된 사용자입니다.", HttpStatus.BAD_REQUEST),
     HOST_CANNOT_CANCEL(40107, "호스트는 참여 취소를 할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_DATE_FORMAT(40108, "날짜 요청 형식이 잘못 되었습니다.", HttpStatus.BAD_REQUEST),
 
     ;
 

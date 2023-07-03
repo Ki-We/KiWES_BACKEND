@@ -47,8 +47,6 @@ public class ClubService {
 
     /**
      * club 모집 글 등록
-     * @param requestDto
-     * @param member
      */
     public Long saveNewClub(ClubArticleRequestDto requestDto, Member member) {
         Gender gender = Gender.valueOf(requestDto.getGender());
@@ -63,7 +61,6 @@ public class ClubService {
                 .content(requestDto.getContent())
                 .locationsKeyword(requestDto.getLocationsKeyword())
                 .location(requestDto.getLocation())
-                .isActivated(true)
                 .build();
         clubRepository.save(club);
 

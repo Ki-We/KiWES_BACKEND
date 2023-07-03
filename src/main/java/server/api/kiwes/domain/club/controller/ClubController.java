@@ -19,8 +19,9 @@ import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-@Api(tags = "Club")
+@Api(tags = "Club - C/U/D 관련", value = "모암 참여, 취소, 승인, 생성 관련")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/club")
@@ -29,12 +30,22 @@ public class ClubController {
     private final MemberService memberService;
     private final ClubMemberService clubMemberService;
 
-    @ApiOperation(value = "모임 글 작성", notes = "날짜 요청 형식 : YYYYMMDD\n location : 위도, 경도\nlocationsKeyword : 짧은 위치 키워드\nGender: MALE, FEMALE, ALL")
+    private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2}$";
+
+    public static boolean isValidDateFormat(String dateStr) {
+        return Pattern.matches(DATE_REGEX, dateStr);
+    }
+
+    @ApiOperation(value = "모임 글 작성", notes = "날짜 요청 형식 : YYYY-MM-DD\n location : 위도, 경도\nlocationsKeyword : 짧은 위치 키워드\nGender: MALE, FEMALE, ALL")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20101, message = "모임 모집 작성글 업로드 성공"),
+            @io.swagger.annotations.ApiResponse(code = 40108, message = "날짜 요청 형식이 잘못 되었습니다. (400)"),
     })
     @PostMapping("/article")
     public ApiResponse<ClubIdResponseDto> postClubRecruitmentArticles(@RequestBody ClubArticleRequestDto requestDto){
+        if(!isValidDateFormat(requestDto.getDate()) || !isValidDateFormat(requestDto.getDueTo()))
+            throw new BizException(ClubResponseType.INVALID_DATE_FORMAT);
+
         Member member = memberService.getLoggedInMember();
         Long clubId = clubService.saveNewClub(requestDto, member);
 
