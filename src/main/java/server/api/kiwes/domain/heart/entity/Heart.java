@@ -1,8 +1,6 @@
 package server.api.kiwes.domain.heart.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.heart.constant.HeartStatus;
 import server.api.kiwes.domain.member.entity.Member;
@@ -12,6 +10,9 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Heart {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "HEART_ID")

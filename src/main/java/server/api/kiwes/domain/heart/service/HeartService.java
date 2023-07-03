@@ -25,4 +25,30 @@ public class HeartService {
         if (heart == null) return false;
         return !heart.getStatus().equals(HeartStatus.NO);
     }
+
+    public void heart(Member member, Club club) {
+        Heart heart = heartRepository.findByClubAndMember(club, member)
+                .orElse(null);
+
+        if (heart == null){
+            Heart newHeart = Heart.builder()
+                    .club(club)
+                    .member(member)
+                    .build();
+
+            heartRepository.save(newHeart);
+            return;
+        }
+
+        heart.setStatus(HeartStatus.YES);
+    }
+
+    public void unheart(Member member, Club club) {
+        Heart heart = heartRepository.findByClubAndMember(club, member)
+                .orElse(null);
+
+        if(heart == null) return;
+
+        heart.setStatus(HeartStatus.NO);
+    }
 }
