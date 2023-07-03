@@ -27,6 +27,7 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "CLUB_ID")
     private Club club;
 
+    @Column(length = 1000)
     private String content;         // 후기 내용
 
     public void setContent(String content){

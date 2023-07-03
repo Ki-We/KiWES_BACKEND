@@ -1,4 +1,4 @@
-package server.api.kiwes.domain.qna;
+package server.api.kiwes.domain.qna.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,7 +17,7 @@ import server.api.kiwes.domain.qna.service.QnaService;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
-@Api(tags = "Club-Q&A")
+@Api(tags = "Club - Q&A")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/qna")

@@ -38,7 +38,11 @@ public class Club extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;           // 모집 성별 (남, 여, 누구나)
     private String title;            // 제목
-    private String thumbnailUrl;     // 썸네일 이미지 주소
+
+    @Builder.Default
+    private String thumbnailUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FlXdug%2Fbtsl9NySlW1%2FrxaVigq7yGuv7JDhlk5kH0%2Fimg.png";     // 썸네일 이미지 주소
+
+    @Column(length = 1000)
     private String content;          // 모임 소개
     private String locationsKeyword; // 위치 키워드
     private String location;         // 위도, 경도

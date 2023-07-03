@@ -19,7 +19,7 @@ import server.api.kiwes.response.BizException;
 
 import java.util.Objects;
 
-@Api(tags = "Review")
+@Api(tags = "Club - Review")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/review")
