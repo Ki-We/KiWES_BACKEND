@@ -12,6 +12,7 @@ import server.api.kiwes.global.entity.Gender;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -41,6 +42,9 @@ public class Club extends BaseTimeEntity {
     private String content;          // 모임 소개
     private String locationsKeyword; // 위치 키워드
     private String location;         // 위도, 경도
+
+    @Builder.Default
+    private String uuid = UUID.randomUUID().toString();
 
     @Builder.Default
     private Boolean isActivated = false;     // 활성화, 비활성화 여부
