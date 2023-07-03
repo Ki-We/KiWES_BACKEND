@@ -1,8 +1,10 @@
 package server.api.kiwes.domain.heart.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import server.api.kiwes.domain.club.entity.Club;
+import server.api.kiwes.domain.heart.constant.HeartStatus;
 import server.api.kiwes.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -23,4 +25,11 @@ public class Heart {
     @JoinColumn(name = "CLUB_ID")
     private Club club;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private HeartStatus status = HeartStatus.YES;
+
+    public void setStatus(HeartStatus status){
+        this.status = status;
+    }
 }
