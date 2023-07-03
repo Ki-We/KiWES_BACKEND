@@ -4,25 +4,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.club.entity.Club;
+import server.api.kiwes.domain.club_member.entity.ClubMember;
+import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
+import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.qna.constant.QnaAnsweredStatus;
 import server.api.kiwes.domain.qna.constant.QnaDeletedStatus;
 import server.api.kiwes.domain.qna.constant.QnaResponseType;
+import server.api.kiwes.domain.qna.dto.QnaDetailDto;
 import server.api.kiwes.domain.qna.dto.QnaRequestDto;
+import server.api.kiwes.domain.qna.dto.QnaResponseDto;
 import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.qna.repository.QnaRepository;
 import server.api.kiwes.response.BizException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class QnaService {
     private final QnaRepository qnaRepository;
-
+    private final ClubMemberService clubMemberService;
     /**
      * qnaID를 통해 QnA 객체 반환
      */
@@ -96,6 +103,21 @@ public class QnaService {
      */
     private String getDateTime(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
+    }
+
+
+    /**
+     * 클럽의 QnA 전체보기 페이지에서 필요한 정보
+     */
+    public QnaResponseDto getEntireQna(Club club, Member member) {
+
+        return QnaResponseDto.builder()
+                .isHost(clubMemberService.findByClubAndMember(club, member).getIsHost())
+                .qnas(club.getQnas().stream()
+                        .map(qna -> QnaDetailDto.of(qna, member))
+                        .collect(Collectors.toList()))
+                .build();
+
     }
 
 
