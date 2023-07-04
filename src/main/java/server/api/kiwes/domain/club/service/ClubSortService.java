@@ -7,6 +7,7 @@ import server.api.kiwes.domain.category.entity.Category;
 import server.api.kiwes.domain.category.repository.CategoryRepository;
 import server.api.kiwes.domain.category.type.CategoryType;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
+import server.api.kiwes.domain.club.dto.ClubSortResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
@@ -38,18 +39,20 @@ public class ClubSortService {
      * @param categories
      */
 
-    public List<Club> getClubByCategory(List<String> categories){
+    public List<ClubSortResponseDto> getClubByCategory(List<String> categories){
 
-        List<Club> club = new ArrayList<>();
+        List<ClubSortResponseDto> club = new ArrayList<>();
+        List<Long> clubIds = new ArrayList<>();
 
         for (String categoryString : categories) {
-//        String categoryString = categories.get(0);
-            System.out.println("categoryString = " + categoryString);
             CategoryType type = CategoryType.valueOf(categoryString);
             Category category = categoryRepository.findByName(type);
+            clubIds.add(category.getId());
 
-            club.addAll(clubCategoryRepository.findAllByCategoryId(category.getId()));
         }
+
+        club.addAll(clubCategoryRepository.findAllByCategoryIds(clubIds));
+
 
         return club;
 
