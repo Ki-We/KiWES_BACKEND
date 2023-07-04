@@ -204,6 +204,14 @@ public class ClubController {
     @PostMapping("/category")
     public ApiResponse<Object> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
         return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_CATEGORY_SUCCESS,
-                clubSortService.getClubByCategory(clubSortRequestDto.getCategories()));
+                clubSortService.getClubByCategory(clubSortRequestDto.getSortedBy()));
     }
+
+    @ApiOperation(value = "언어별 모임", notes = "언어별 모임 조회")
+    @PostMapping("/language")
+    public ApiResponse<Object> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+        return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_LANGUAGE_SUCCESS,
+                clubSortService.getClubByLanguages(clubSortRequestDto.getSortedBy()));
+    }
+
 }

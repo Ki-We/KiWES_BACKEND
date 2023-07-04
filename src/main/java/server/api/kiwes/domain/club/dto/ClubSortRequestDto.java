@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 @Setter
 public class ClubSortRequestDto {
-    private List<String> categories;
+    private List<String> sortedBy;
 }

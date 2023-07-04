@@ -13,6 +13,10 @@ import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
 import server.api.kiwes.domain.club_category.repository.ClubCategoryRepository;
 import server.api.kiwes.domain.club_language.entity.ClubLanguage;
+import server.api.kiwes.domain.club_language.repository.ClubLanguageRepository;
+import server.api.kiwes.domain.language.entity.Language;
+import server.api.kiwes.domain.language.language.LanguageRepository;
+import server.api.kiwes.domain.language.type.LanguageType;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.response.BizException;
@@ -26,8 +30,12 @@ import java.util.List;
 public class ClubSortService {
 
     private final ClubRepository clubRepository;
+
     private final ClubCategoryRepository clubCategoryRepository;
     private final CategoryRepository categoryRepository;
+
+    private final LanguageRepository languageRepository;
+    private final ClubLanguageRepository clubLanguageRepository;
     private final MemberService memberService;
 
     /**
@@ -75,6 +83,41 @@ public class ClubSortService {
 
         return allByCategoryIds;
 
+
+    }
+
+
+    public List<ClubSortResponseDto> getClubByLanguages(List<String> languages){
+
+
+        // 카테고리 id list
+        Member member = memberService.getLoggedInMember();
+        List<Long> clubIds = new ArrayList<>();
+
+        for (String languageString : languages) {
+            LanguageType type = LanguageType.valueOf(languageString);
+            Language language = languageRepository.findByName(type);
+            clubIds.add(language.getId());
+        }
+
+        List<ClubSortResponseDto> allByLanguageIds = clubLanguageRepository.findAllByCategoryIds(clubIds);
+        for (ClubSortResponseDto allByLanguageId : allByLanguageIds) {
+            Club club = findById(allByLanguageId.getClubId());
+
+            allByLanguageId.setLanguages(club.getLanguages());
+
+            if (club.getHearts().size() > 0) {
+                club.getHearts().forEach(heartMember -> {
+                    if (heartMember.getId().equals(member.getId())) {
+                        allByLanguageId.setHeart(true);
+                    }
+                });
+            } else{
+                allByLanguageId.setHeart(false);
+            }
+        }
+
+        return allByLanguageIds;
 
 
     }
