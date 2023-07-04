@@ -17,13 +17,8 @@ public interface ClubCategoryRepository extends JpaRepository<ClubCategory, Long
     @Query("select distinct new server.api.kiwes.domain.club.dto.ClubSortResponseDto(c.club.id, c.club.title, c.club.thumbnailUrl, c.club.date, c.club.location) " +
             "from ClubCategory c where c.category.id IN :categoryIds")
     List<ClubSortResponseDto> findAllByCategoryIds(@Param("categoryIds") List<Long> categoryIds);
+
+
 }
 
 
-//    Long clubId;
-//    String title;
-//    String thumbnailImage;
-//    String date;
-//    String location;
-//    List<String> languages;
-//    HeartStatus isHeart;

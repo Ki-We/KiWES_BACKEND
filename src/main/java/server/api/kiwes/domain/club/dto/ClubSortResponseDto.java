@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.club.dto;
 
 import lombok.*;
+import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.heart.constant.HeartStatus;
 import server.api.kiwes.domain.language.type.LanguageType;
 
@@ -18,7 +19,7 @@ public class ClubSortResponseDto {
     String thumbnailImage;
     String date;
     String location;
-    List<LanguageType> languages;
+    List<String> languages;
     HeartStatus isHeart;
 
     public ClubSortResponseDto(Long clubId, String title, String thumbnailImage, String date, String location) {
@@ -28,13 +29,23 @@ public class ClubSortResponseDto {
         this.date = date;
         this.location = location;
 
-//        List<String> typeToString = new ArrayList<>();
-//
-//        for (Object language : languages) {
-//            typeToString.add(language.getClass().getName().toString());
-//        }
-//
-//        this.languages = typeToString;
+    }
+
+    public void setLanguages(List<ClubLanguage> languages) {
+        languages.forEach(languageType -> {
+            if (this.languages == null) {
+                this.languages = new ArrayList<>();
+            }
+            this.languages.add(languageType.getLanguage().getName().toString());
+        });
+    }
+
+    public void setHeart(Boolean b) {
+        if (b) {
+            this.isHeart = HeartStatus.YES;
+        } else {
+            this.isHeart = HeartStatus.NO;
+        }
     }
 }
 

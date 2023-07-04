@@ -12,6 +12,9 @@ import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
 import server.api.kiwes.domain.club_category.repository.ClubCategoryRepository;
+import server.api.kiwes.domain.club_language.entity.ClubLanguage;
+import server.api.kiwes.domain.member.entity.Member;
+import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.response.BizException;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class ClubSortService {
     private final ClubRepository clubRepository;
     private final ClubCategoryRepository clubCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final MemberService memberService;
 
     /**
      * club id를 통해 club 정보 불러오기
@@ -41,20 +45,37 @@ public class ClubSortService {
 
     public List<ClubSortResponseDto> getClubByCategory(List<String> categories){
 
-        List<ClubSortResponseDto> club = new ArrayList<>();
+
+        // 카테고리 id list
+        Member member = memberService.getLoggedInMember();
         List<Long> clubIds = new ArrayList<>();
 
         for (String categoryString : categories) {
             CategoryType type = CategoryType.valueOf(categoryString);
             Category category = categoryRepository.findByName(type);
             clubIds.add(category.getId());
-
         }
 
-        club.addAll(clubCategoryRepository.findAllByCategoryIds(clubIds));
+        List<ClubSortResponseDto> allByCategoryIds = clubCategoryRepository.findAllByCategoryIds(clubIds);
+        for (ClubSortResponseDto allByCategoryId : allByCategoryIds) {
+            Club club = findById(allByCategoryId.getClubId());
+
+            allByCategoryId.setLanguages(club.getLanguages());
+
+            if (club.getHearts().size() > 0) {
+                club.getHearts().forEach(heartMember -> {
+                    if (heartMember.getId().equals(member.getId())) {
+                        allByCategoryId.setHeart(true);
+                    }
+                });
+            } else{
+                allByCategoryId.setHeart(false);
+            }
+        }
+
+        return allByCategoryIds;
 
 
-        return club;
 
     }
 
