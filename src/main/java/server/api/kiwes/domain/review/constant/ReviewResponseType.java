@@ -11,6 +11,7 @@ public enum ReviewResponseType implements BaseResponseType {
     POST_SUCCESS(21201, "후기 등록 완료", HttpStatus.OK),
     MODIFY_SUCCESS(21202, "후기 수정 완료", HttpStatus.OK),
     DELETE_SUCCESS(21203, "후기 삭제 완료", HttpStatus.OK),
+    ENTIRE_LIST(21204, "후기 모두 보기", HttpStatus.OK),
 
 
     NOT_CLUB_MEMBER(41201, "모임 멤버가 아님", HttpStatus.BAD_REQUEST),

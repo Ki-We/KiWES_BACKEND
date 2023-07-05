@@ -95,5 +95,19 @@ public class ReviewController {
         reviewService.deleteReview(review);
         return ApiResponse.of(ReviewResponseType.DELETE_SUCCESS);
     }
+    
+    @ApiOperation(value = "후기 모두 보기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21204, message = "후기 모두 보기 성공"),
+    })
+    @GetMapping("/entire/{clubId}")
+    public ApiResponse<Object> getEntireReview(@PathVariable Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+
+        reviewService.getEntire(club, member);
+
+        return ApiResponse.of(ReviewResponseType.ENTIRE_LIST);
+    }
 
 }

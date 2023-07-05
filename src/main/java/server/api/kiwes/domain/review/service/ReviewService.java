@@ -56,4 +56,11 @@ public class ReviewService {
     public void deleteReview(Review review) {
         reviewRepository.deleteById(review.getId());
     }
+
+    /**
+     * 후기 모두 보기
+     */
+    public void getEntire(Club club, Member member) {
+
+    }
 }
