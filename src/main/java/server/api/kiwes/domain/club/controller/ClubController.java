@@ -10,8 +10,10 @@ import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
 import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
 import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
 import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
+import server.api.kiwes.domain.club.dto.ClubSortRequestDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
+import server.api.kiwes.domain.club.service.ClubSortService;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
@@ -31,6 +33,7 @@ public class ClubController {
     private final ClubService clubService;
     private final MemberService memberService;
     private final ClubMemberService clubMemberService;
+    private final ClubSortService clubSortService;
 
     private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2}$";
 
@@ -196,4 +199,19 @@ public class ClubController {
         clubService.kickMember(clubApplicant, club);
         return ApiResponse.of(ClubResponseType.KICK_OUT_SUCCESS);
     }
+
+    @ApiOperation(value = "카테고리별 모임", notes = "카테고리별 모임 조회")
+    @PostMapping("/category")
+    public ApiResponse<Object> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+        return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_CATEGORY_SUCCESS,
+                clubSortService.getClubByCategory(clubSortRequestDto.getSortedBy()));
+    }
+
+    @ApiOperation(value = "언어별 모임", notes = "언어별 모임 조회")
+    @PostMapping("/language")
+    public ApiResponse<Object> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+        return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_LANGUAGE_SUCCESS,
+                clubSortService.getClubByLanguages(clubSortRequestDto.getSortedBy()));
+    }
+
 }
