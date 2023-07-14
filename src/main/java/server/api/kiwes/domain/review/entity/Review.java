@@ -56,9 +56,10 @@ public class Review extends BaseTimeEntity {
         this.reviewDate = date;
     }
 
-    public void modifyReview(String reviewContent){
+    public void modifyReview(String reviewContent, String now){
         this.reviewContent = reviewContent;
         this.isModified = true;
+        this.reviewDate = now;
     }
 
     public void setReply(Member member, String content, String replyDate){

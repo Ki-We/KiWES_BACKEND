@@ -55,7 +55,7 @@ public class ReviewService {
      * 후기 수정
      */
     public void modifyReview(Review review, ReviewRegisterDto registerDto) {
-        review.modifyReview(registerDto.getContent());
+        review.modifyReview(registerDto.getContent(), getDateTime());
     }
 
     /**
