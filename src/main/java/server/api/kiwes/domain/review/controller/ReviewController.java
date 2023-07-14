@@ -11,6 +11,7 @@ import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.review.constant.ReviewResponseType;
+import server.api.kiwes.domain.review.dto.ReviewEntireResponseDto;
 import server.api.kiwes.domain.review.dto.ReviewRegisterDto;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.domain.review.service.ReviewService;
@@ -101,13 +102,11 @@ public class ReviewController {
             @io.swagger.annotations.ApiResponse(code = 21204, message = "후기 모두 보기 성공"),
     })
     @GetMapping("/entire/{clubId}")
-    public ApiResponse<Object> getEntireReview(@PathVariable Long clubId){
+    public ApiResponse<ReviewEntireResponseDto> getEntireReview(@PathVariable Long clubId){
         Member member = memberService.getLoggedInMember();
         Club club = clubService.findById(clubId);
 
-        reviewService.getEntire(club, member);
-
-        return ApiResponse.of(ReviewResponseType.ENTIRE_LIST);
+        return ApiResponse.of(ReviewResponseType.ENTIRE_LIST, reviewService.getEntire(club, member));
     }
 
     @ApiOperation(value = "후기에 답글 달기", notes = "호스트만 달 수 있다.")

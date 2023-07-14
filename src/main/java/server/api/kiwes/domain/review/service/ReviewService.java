@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.club.entity.Club;
+import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.review.constant.ReviewResponseType;
+import server.api.kiwes.domain.review.dto.ReviewDetailDto;
+import server.api.kiwes.domain.review.dto.ReviewEntireResponseDto;
 import server.api.kiwes.domain.review.dto.ReviewRegisterDto;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.domain.review.repository.ReviewRepository;
@@ -14,12 +17,14 @@ import server.api.kiwes.response.BizException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final ClubMemberService clubMemberService;
 
     /**
      * id로 Review 객체 찾아 반환
@@ -63,9 +68,15 @@ public class ReviewService {
     /**
      * 후기 모두 보기
      */
-    public void getEntire(Club club, Member member) {
+    public ReviewEntireResponseDto getEntire(Club club, Member member) {
         List<Review> reviews = reviewRepository.findByClub(club);
 
+        return ReviewEntireResponseDto.builder()
+                .isHost(clubMemberService.findByClubAndMember(club, member).getIsHost())
+                .reviews(club.getReviews().stream()
+                        .map(review -> ReviewDetailDto.of(review, member))
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     /**
