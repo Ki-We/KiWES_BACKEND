@@ -8,10 +8,15 @@ import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.review.entity.Review;
 
+import java.util.List;
+
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Boolean existsByClubAndMember(Club club, Member member);
+
+    Boolean existsByClubAndReviewer(Club club, Member member);
 
     @Modifying
     @Query(nativeQuery = true, value = "delete from review where review_id = :id")
     void deleteById(@Param("id") Long id);
+
+    List<Review> findByClub(Club club);
 }

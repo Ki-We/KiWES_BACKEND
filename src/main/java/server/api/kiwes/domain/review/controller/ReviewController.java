@@ -11,6 +11,7 @@ import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.review.constant.ReviewResponseType;
+import server.api.kiwes.domain.review.dto.ReviewEntireResponseDto;
 import server.api.kiwes.domain.review.dto.ReviewRegisterDto;
 import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.domain.review.service.ReviewService;
@@ -66,7 +67,7 @@ public class ReviewController {
             throw new BizException(ReviewResponseType.CHECK_PATH);
         }
 
-        if(!Objects.equals(review.getMember().getId(), member.getId())){
+        if(!Objects.equals(review.getReviewer().getId(), member.getId())){
             throw new BizException(ReviewResponseType.NOT_AUTHOR);
         }
 
@@ -88,12 +89,42 @@ public class ReviewController {
             throw new BizException(ReviewResponseType.CHECK_PATH);
         }
 
-        if(!Objects.equals(review.getMember().getId(), member.getId())){
+        if(!Objects.equals(review.getReviewer().getId(), member.getId())){
             throw new BizException(ReviewResponseType.NOT_AUTHOR);
         }
 
         reviewService.deleteReview(review);
         return ApiResponse.of(ReviewResponseType.DELETE_SUCCESS);
     }
+    
+    @ApiOperation(value = "후기 모두 보기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21204, message = "후기 모두 보기 성공"),
+    })
+    @GetMapping("/entire/{clubId}")
+    public ApiResponse<ReviewEntireResponseDto> getEntireReview(@PathVariable Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
 
+        return ApiResponse.of(ReviewResponseType.ENTIRE_LIST, reviewService.getEntire(club, member));
+    }
+
+    @ApiOperation(value = "후기에 답글 달기", notes = "호스트만 달 수 있다.")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21205, message = "후기 답글 등록 성공"),
+            @io.swagger.annotations.ApiResponse(code = 41206, message = "호스트가 아니므로 답글을 달 수 없음 (401)"),
+    })
+    @PostMapping("/reply/{clubId}/{reviewId}")
+    public ApiResponse<Object> postReply(@PathVariable Long clubId, @PathVariable Long reviewId, @RequestBody ReviewRegisterDto registerDto){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        if(!clubMemberService.findByClubAndMember(club, member).getIsHost()){
+            throw new BizException(ReviewResponseType.NOT_HOST);
+        }
+
+        Review review = reviewService.findById(reviewId);
+        reviewService.postReply(member, review, registerDto);
+
+        return ApiResponse.of(ReviewResponseType.REPLY_SUCCESS);
+    }
 }

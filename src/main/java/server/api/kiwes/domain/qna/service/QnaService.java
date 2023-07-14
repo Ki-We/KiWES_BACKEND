@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.club.entity.Club;
-import server.api.kiwes.domain.club_member.entity.ClubMember;
-import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.qna.constant.QnaAnsweredStatus;
@@ -20,7 +18,6 @@ import server.api.kiwes.response.BizException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -55,7 +52,7 @@ public class QnaService {
      * API를 요청한 사용자가 호스트인지는 컨트롤러에서 검사함
      * status만 NO로 바꾸고, 테이블 내 필드들을 null로 바꾸지는 않았음.
      */
-    public void deleteAnswer(Member member, Qna qna) {
+    public void deleteAnswer(Qna qna) {
         qna.setIsAnswered(QnaAnsweredStatus.NO);
     }
 
