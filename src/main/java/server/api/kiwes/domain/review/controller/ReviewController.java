@@ -66,7 +66,7 @@ public class ReviewController {
             throw new BizException(ReviewResponseType.CHECK_PATH);
         }
 
-        if(!Objects.equals(review.getMember().getId(), member.getId())){
+        if(!Objects.equals(review.getReviewer().getId(), member.getId())){
             throw new BizException(ReviewResponseType.NOT_AUTHOR);
         }
 
@@ -88,7 +88,7 @@ public class ReviewController {
             throw new BizException(ReviewResponseType.CHECK_PATH);
         }
 
-        if(!Objects.equals(review.getMember().getId(), member.getId())){
+        if(!Objects.equals(review.getReviewer().getId(), member.getId())){
             throw new BizException(ReviewResponseType.NOT_AUTHOR);
         }
 
@@ -110,4 +110,22 @@ public class ReviewController {
         return ApiResponse.of(ReviewResponseType.ENTIRE_LIST);
     }
 
+    @ApiOperation(value = "후기에 답글 달기", notes = "호스트만 달 수 있다.")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21205, message = "후기 답글 등록 성공"),
+            @io.swagger.annotations.ApiResponse(code = 41206, message = "호스트가 아니므로 답글을 달 수 없음 (401)"),
+    })
+    @PostMapping("/reply/{clubId}/{reviewId}")
+    public ApiResponse<Object> postReply(@PathVariable Long clubId, @PathVariable Long reviewId, @RequestBody ReviewRegisterDto registerDto){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        if(!clubMemberService.findByClubAndMember(club, member).getIsHost()){
+            throw new BizException(ReviewResponseType.NOT_HOST);
+        }
+
+        Review review = reviewService.findById(reviewId);
+        reviewService.postReply(member, review, registerDto);
+
+        return ApiResponse.of(ReviewResponseType.REPLY_SUCCESS);
+    }
 }

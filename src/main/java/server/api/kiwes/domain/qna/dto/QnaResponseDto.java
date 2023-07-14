@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class QnaResponseDto {
-    Boolean isHost;
+    Boolean isHost; // 클라이언트에서 '답글 달기'에 쓰라고 주는 값\
     List<QnaDetailDto> qnas;
 }

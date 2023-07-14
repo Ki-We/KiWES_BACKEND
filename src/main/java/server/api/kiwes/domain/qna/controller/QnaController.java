@@ -97,7 +97,7 @@ public class QnaController {
         }
 
         Qna qna = qnaService.findById(qnaId);
-        qnaService.deleteAnswer(member, qna);
+        qnaService.deleteAnswer(qna);
 
         return ApiResponse.of(QnaResponseType.A_DELETE_SUCCESS);
 
