@@ -85,6 +85,7 @@ public class ClubDetailService {
                 .reviews(reviews)
                 .isHost(host.getId().equals(member.getId()))
                 .isHeart(heartService.getHearted(club, member))
+                .isActivated(club.getIsActivated())
                 .build();
     }
 

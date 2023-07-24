@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.club.dto;
 
 import lombok.*;
+import server.api.kiwes.domain.club.constant.ClubStatus;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ClubArticleResponseDto {
 
     @Builder.Default
     Boolean isHost = false;
-
     Boolean isHeart;
+    ClubStatus isActivated;
+
 }
