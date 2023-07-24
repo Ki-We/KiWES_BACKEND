@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ClubStatus {
     YES("YES"),
-    NO("N");
+    NO("NO");
 
     private final String status;
 }
