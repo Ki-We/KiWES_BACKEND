@@ -1,5 +1,6 @@
 package server.api.kiwes.domain.member.entity;
 
+import io.swagger.annotations.Api;
 import lombok.*;
 import server.api.kiwes.domain.BaseTimeEntity;
 import server.api.kiwes.domain.heart.entity.Heart;
@@ -18,6 +19,7 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 
 
+@Api(tags = "Member - 인증 관련")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,9 +53,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Heart> hearts;
 
-
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "respondent", cascade = CascadeType.ALL)
+    private List<Review> replies;
 
     @OneToMany(mappedBy = "questioner", cascade = CascadeType.ALL)
     private List<Qna> questions;

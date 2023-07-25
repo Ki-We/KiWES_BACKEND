@@ -32,7 +32,9 @@ public class Qna extends BaseTimeEntity {
     @JoinColumn(name = "RESPONDENT_ID")
     private Member respondent;
 
+    @Column(length = 1000)
     private String questionContent;
+    @Column(length = 1000)
     private String answerContent;
     private String qDate;                 // 질문 등록 시각
     private String aDate;                 // 답변 등록 시각

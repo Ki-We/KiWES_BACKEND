@@ -19,4 +19,6 @@ public class Banner {
 
     private String type;    // ??
 
+    private Long priority;
+
 }

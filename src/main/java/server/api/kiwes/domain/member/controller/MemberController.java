@@ -29,7 +29,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/members")
+//@RequestMapping("/api/v1/members")
 @Api(tags = "Member")
 @Slf4j
 public class MemberController {
@@ -38,6 +38,17 @@ public class MemberController {
     private final MemberService memberService;
     private final PreSignedUrlService preSignedUrlService;
     private final TokenProvider tokenProvider;
+
+    @ApiOperation(value = "accessToken 값 위한 API", notes = "https://kauth.kakao.com/oauth/authorize?client_id=93df5ea9a1445313343f4bb0f1d362ce&redirect_uri=http://localhost:8080/oauth/kakao&response_type=code 요청 시 리다이렉트 됨")
+    @GetMapping("/oauth/kakao")
+    public ApiResponse<Object> kakaoCallBack(
+            @RequestParam String code
+    ){
+        System.out.println(code);
+
+        return ApiResponse.of(MemberResponseType.KAKAO_CALL_BACK_SUCCESS,authenticationService.getAccessToken(code));
+    }
+
 
     /**
      * API
@@ -136,6 +147,9 @@ public class MemberController {
         return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.myPage());
 
     }
+
+
+
 
 
 }

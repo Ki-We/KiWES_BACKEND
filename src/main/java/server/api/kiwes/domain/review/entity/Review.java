@@ -20,17 +20,51 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    @JoinColumn(name = "REVIEWER_ID")
+    private Member reviewer;
+
+    @ManyToOne
+    @JoinColumn(name = "RESPONDENT_ID")
+    private Member respondent;
 
     @ManyToOne
     @JoinColumn(name = "CLUB_ID")
     private Club club;
 
     @Column(length = 1000)
-    private String content;         // 후기 내용
+    private String reviewContent;         // 후기 내용
 
-    public void setContent(String content){
-        this.content = content;
+    @Column(length = 1000)
+    private String replyContent;         // 후기 답글 내용
+
+    private String reviewDate;          // 후기 등록 시각
+    private String replyDate;           // 답글 등록 시각
+
+    @Builder.Default
+    private Boolean isModified = false;
+    public void setReviewContent(String content){
+        this.reviewContent = content;
+    }
+    public void setReplyContent(String content){
+        this.replyContent = content;
+    }
+
+    public void setIsModifiedTrue(){
+        this.isModified = true;
+    }
+    public void setReviewDate(String date){
+        this.reviewDate = date;
+    }
+
+    public void modifyReview(String reviewContent, String now){
+        this.reviewContent = reviewContent;
+        this.isModified = true;
+        this.reviewDate = now;
+    }
+
+    public void setReply(Member member, String content, String replyDate){
+        this.respondent = member;
+        this.replyContent = content;
+        this.replyDate = replyDate;
     }
 }

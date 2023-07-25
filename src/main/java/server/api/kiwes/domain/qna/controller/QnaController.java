@@ -12,6 +12,7 @@ import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.qna.constant.QnaResponseType;
 import server.api.kiwes.domain.qna.dto.QnaRequestDto;
+import server.api.kiwes.domain.qna.dto.QnaResponseDto;
 import server.api.kiwes.domain.qna.entity.Qna;
 import server.api.kiwes.domain.qna.service.QnaService;
 import server.api.kiwes.response.ApiResponse;
@@ -96,11 +97,19 @@ public class QnaController {
         }
 
         Qna qna = qnaService.findById(qnaId);
-        qnaService.deleteAnswer(member, qna);
+        qnaService.deleteAnswer(qna);
 
         return ApiResponse.of(QnaResponseType.A_DELETE_SUCCESS);
 
     }
 
+    @ApiOperation(value = "모임의 qna 전체 보기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21105, message = "qna 리스트 응답 성공\n 답변이 달리지 않은 질문은 답변 관련 정보가 전부 null로 응답됩니다."),
+    })
+    @GetMapping("/entire/{clubId}")
+    public ApiResponse<QnaResponseDto> getEntireQna(@PathVariable Long clubId){
+        return ApiResponse.of(QnaResponseType.GET_ENTIRE_LIST, qnaService.getEntireQna(clubService.findById(clubId), memberService.getLoggedInMember()));
+    }
 
 }

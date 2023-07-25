@@ -2,6 +2,7 @@ package server.api.kiwes.domain.club.entity;
 
 import lombok.*;
 import server.api.kiwes.domain.BaseTimeEntity;
+import server.api.kiwes.domain.club.constant.ClubStatus;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
 import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
@@ -51,7 +52,8 @@ public class Club extends BaseTimeEntity {
     private String uuid = UUID.randomUUID().toString();
 
     @Builder.Default
-    private Boolean isActivated = false;     // 활성화, 비활성화 여부
+    @Enumerated(EnumType.STRING)
+    private ClubStatus isActivated = ClubStatus.YES;     // 활성화, 비활성화 여부
 
     @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY, cascade = CascadeType.ALL )
     private List<ClubLanguage> languages;

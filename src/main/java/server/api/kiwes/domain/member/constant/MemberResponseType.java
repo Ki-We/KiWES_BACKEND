@@ -18,6 +18,7 @@ public enum MemberResponseType implements BaseResponseType {
     NICKNAME_DUPLICATE_SUCCESS(20005, "닉네임 중복체크 완료", HttpStatus.OK),
     INTRODUCTION_UPDATE_SUCCESS(20006, "자기소개 수정 완료", HttpStatus.OK),
     MYPAGE_LOAD_SUCCESS(20007, "마이페이지 정보 조회 완료", HttpStatus.OK),
+    KAKAO_CALL_BACK_SUCCESS(20008,"카카오 로그인 진행중",HttpStatus.OK),
 
 
     SIGN_UP_ING(40003,"회원가입 진행중", HttpStatus.BAD_REQUEST),
