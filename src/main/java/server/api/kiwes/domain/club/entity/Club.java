@@ -52,6 +52,7 @@ public class Club extends BaseTimeEntity {
     private String uuid = UUID.randomUUID().toString();
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private ClubStatus isActivated = ClubStatus.YES;     // 활성화, 비활성화 여부
 
     @OneToMany(mappedBy = "club",  fetch = FetchType.LAZY, cascade = CascadeType.ALL )
