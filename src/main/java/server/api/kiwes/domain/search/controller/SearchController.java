@@ -31,6 +31,15 @@ public class SearchController {
     @GetMapping("/search")
     public ApiResponse<List<SearchResponseDto>> search(@RequestParam String keyword){
 
-        return ApiResponse.of(SearchResponseType.SEARCH_SUCCESS, searchService.search(keyword, memberService.getLoggedInMember()));
+        return ApiResponse.of(SearchResponseType.SEARCH_SUCCESS, searchService.search(keyword.trim(), memberService.getLoggedInMember()));
+    }
+    
+    @ApiOperation(value = "인기 검색어", notes = "3일간 TOP 5, 배열인데 앞에서부터 1위")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 21302, message = "인기 검색어 응답 성공"),
+    })
+    @GetMapping("/search/popular")
+    public ApiResponse<List<String>> getPopularSearchKeyword(){
+        return ApiResponse.of(SearchResponseType.POPULAR_SEARCH_KEYWORD, searchService.getPopularSearchKeyword());
     }
 }
