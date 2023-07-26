@@ -1,17 +1,16 @@
-package server.api.kiwes.domain.search;
+package server.api.kiwes.domain.search.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.api.kiwes.domain.club.entity.Club;
-import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.heart.constant.HeartStatus;
 import server.api.kiwes.domain.heart.entity.Heart;
 import server.api.kiwes.domain.member.entity.Member;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -25,6 +24,7 @@ public class SearchResponseDto {
     private String dueTo;
     private String location;
     private List<String> languages;
+    private List<String> categories;
     private HeartStatus isHeart;
 
     public static SearchResponseDto of(Club club, Member member){
@@ -49,7 +49,28 @@ public class SearchResponseDto {
                         .stream()
                         .map(clubLanguage -> clubLanguage.getLanguage().getName().getName())
                         .collect(Collectors.toList()))
+                .categories(club.getCategories().stream().map(clubCategory -> clubCategory.getCategory().getName().getName()).collect(Collectors.toList()))
                 .isHeart(isHeart)
                 .build();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SearchResponseDto that = (SearchResponseDto) o;
+        return Objects.equals(clubId, that.clubId) &&
+                Objects.equals(thumbnailImageUrl, that.thumbnailImageUrl) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(dueTo, that.dueTo) &&
+                Objects.equals(location, that.location) &&
+                Objects.equals(languages, that.languages) &&
+                isHeart == that.isHeart;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clubId, thumbnailImageUrl, title, dueTo, location, languages, isHeart);
     }
 }

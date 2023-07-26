@@ -1,4 +1,4 @@
-package server.api.kiwes.domain.search;
+package server.api.kiwes.domain.search.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
