@@ -6,11 +6,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
-import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
-import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
-import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
-import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
-import server.api.kiwes.domain.club.dto.ClubSortRequestDto;
+import server.api.kiwes.domain.club.dto.*;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
 import server.api.kiwes.domain.club.service.ClubSortService;
@@ -22,6 +18,7 @@ import server.api.kiwes.domain.qna.constant.QnaResponseType;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -202,16 +199,23 @@ public class ClubController {
 
     @ApiOperation(value = "카테고리별 모임", notes = "카테고리별 모임 조회")
     @PostMapping("/category")
-    public ApiResponse<Object> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+    public ApiResponse<List<ClubSortResponseDto>> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
         return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_CATEGORY_SUCCESS,
                 clubSortService.getClubByCategory(clubSortRequestDto.getSortedBy()));
     }
 
     @ApiOperation(value = "언어별 모임", notes = "언어별 모임 조회")
     @PostMapping("/language")
-    public ApiResponse<Object> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+    public ApiResponse<List<ClubSortResponseDto>> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
         return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_LANGUAGE_SUCCESS,
                 clubSortService.getClubByLanguages(clubSortRequestDto.getSortedBy()));
+    }
+
+    @ApiOperation(value = "추천 모임", notes = "추천 모임 조회")
+    @PostMapping("/recommend")
+    public ApiResponse<List<ClubSortResponseDto>> sortByRecommend(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+        return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_RECOMMEND_SUCCESS,
+                clubSortService.getClubByRecommend());
     }
 
 }
