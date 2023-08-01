@@ -60,6 +60,13 @@ public class MemberAuthenticationService {
     private final TokenProvider tokenProvider;
 
 
+    /**
+     *
+     * @param token
+     * @return LoginResponse
+     * 카카오 로그인
+     *
+     */
     public LoginResponse login(String token) {
 
         // access token 으로 사용자 정보 가져오기
@@ -79,6 +86,12 @@ public class MemberAuthenticationService {
 
     }
 
+    /**
+     *
+     * @param additionInfoRequest
+     * @return LoginResponse
+     * 가입 되어있지 않은 경우, 추가 정보 입력 후 카카오 회원가입
+     */
     public LoginResponse signUp(AdditionInfoRequest additionInfoRequest) {
 
         //추가 정보 입력 시
@@ -103,6 +116,10 @@ public class MemberAuthenticationService {
         return LoginResponse.from(tokenInfoResponse, SIGN_UP_SUCCESS.getMessage(), member.getId());
 
     }
+
+    /**
+     * 리프레쉬 토큰 발급
+     */
 
     public RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         //1. refreshToken 검증
@@ -196,6 +213,10 @@ public class MemberAuthenticationService {
     }
 
 
+    /**
+     *
+     * 카카오 연결해서 엑세스 토큰 발급 받기
+     */
     public String getAccessToken(String code) {
             String access_Token="";
             String refresh_Token ="";

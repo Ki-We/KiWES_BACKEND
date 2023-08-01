@@ -39,6 +39,9 @@ public class MemberService {
                 .orElseThrow(() -> new BizException(MemberResponseType.NOT_LOGGED_IN_USER));
     }
 
+    /**
+     * 마이페이지-프로필 이미지 변경 (presigned URL)
+     */
     public String changeProfileImg() {
 
         Long memberId = SecurityUtils.getLoggedInUser().getId();
@@ -48,7 +51,9 @@ public class MemberService {
 
         return member.getNickname();
     }
-
+    /**
+     * 닉네임 중복 체크
+     */
     public String nicknameDuplicateCheck(String nickname) {
         if (memberRepository.findNotDeletedByNickname(nickname).isPresent()) {
             return MemberResponseType.EXISTED_NICKNAME.getMessage();
@@ -56,7 +61,9 @@ public class MemberService {
             return MemberResponseType.VALID_NICKNAME.getMessage();
         }
     }
-
+    /**
+     * 자기소개 update
+     */
     public String updateIntroduction(String introduction) {
         Long memberId = SecurityUtils.getLoggedInUser().getId();
         Member member = memberRepository.findById(memberId).orElseThrow();
@@ -66,6 +73,9 @@ public class MemberService {
         return member.getNickname();
     }
 
+    /**
+     * 마이페이지 GET
+     */
     public MyPageResponse myPage() throws ParseException {
         Long memberId = SecurityUtils.getLoggedInUser().getId();
         Member member = memberRepository.findById(memberId).orElseThrow();

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.UUID;
 
-
+/**
+ * AWS PreSigned URL
+ */
 @Component
 @RequiredArgsConstructor
 public class PreSignedUrlService {

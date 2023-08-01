@@ -24,6 +24,10 @@ import static server.api.kiwes.domain.member.constant.MemberServiceMessage.KAKAO
 @Slf4j
 public class MemberKakaoService {
 
+    /**
+     *
+     * 카카오 연결
+     */
     public JsonObject connectKakao(String reqURL, String token) {
         try {
             URL url = new URL(reqURL);
@@ -50,17 +54,26 @@ public class MemberKakaoService {
         }
 
     }
+
+    /**
+     * saveMember() 할 때
+     */
     public String getEmail(JsonObject userInfo) {
         if (userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("has_email").getAsBoolean()) {
             return userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("email").getAsString();
         }
         throw new BizException(NOT_FOUND_EMAIL);
     }
-
+    /**
+     * saveMember() 할 때
+     */
     public String getProfileUrl(JsonObject userInfo) {
         return userInfo.getAsJsonObject("properties").get("profile_image").getAsString();
     }
 
+    /**
+     * saveMember() 할 때
+     */
     public String getGender(JsonObject userInfo) {
         if (userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("has_gender").getAsBoolean() &&
                 !userInfo.getAsJsonObject(KAKAO_ACOUNT.getValue()).get("gender_needs_agreement").getAsBoolean()) {
