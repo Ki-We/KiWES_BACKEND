@@ -48,6 +48,10 @@ public class Club extends BaseTimeEntity {
     private String locationsKeyword; // 위치 키워드
     private String location;         // 위도, 경도
 
+    @Setter
+    @Builder.Default
+    private Integer heartCnt = 0;
+
     @Builder.Default
     private String uuid = UUID.randomUUID().toString();
 
