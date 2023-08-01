@@ -22,6 +22,9 @@ public class MemberValidationService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 닉네임 중복 확인
+     */
     public CheckNicknameResponse checkNickname(String nickName) {
         if (this.memberRepository.findNotDeletedByNickname(nickName.trim()).isPresent()) {
             return new CheckNicknameResponse(EXISTED_NCIKNAME.getValue());
@@ -30,6 +33,9 @@ public class MemberValidationService {
         }
     }
 
+    /**
+     * 회원가입 시, 가입한 이메일인지 확인
+     */
     public Member validateEmail(String email) {
         return this.memberRepository.findNotDeletedByEmail(email).orElseThrow(() -> new BizException(NOT_FOUND_EMAIL));
     }

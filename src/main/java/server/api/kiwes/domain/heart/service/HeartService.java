@@ -26,6 +26,9 @@ public class HeartService {
         return !heart.getStatus().equals(HeartStatus.NO);
     }
 
+    /**
+     * 모임 찜하기
+     */
     public void heart(Member member, Club club) {
         Heart heart = heartRepository.findByClubAndMember(club, member)
                 .orElse(null);
@@ -41,8 +44,12 @@ public class HeartService {
         }
 
         heart.setStatus(HeartStatus.YES);
+        club.setHeartCnt(club.getHeartCnt() + 1);
     }
 
+    /**
+     * 모임 찜하기 취소
+     */
     public void unheart(Member member, Club club) {
         Heart heart = heartRepository.findByClubAndMember(club, member)
                 .orElse(null);
@@ -50,5 +57,6 @@ public class HeartService {
         if(heart == null) return;
 
         heart.setStatus(HeartStatus.NO);
+        club.setHeartCnt(club.getHeartCnt() - 1);
     }
 }

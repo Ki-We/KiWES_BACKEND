@@ -10,9 +10,14 @@ import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member_category.entity.MemberCategory;
 import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 import server.api.kiwes.domain.search.dto.SearchResponseDto;
+import server.api.kiwes.domain.search_count.dto.SearchCountResultDto;
+import server.api.kiwes.domain.search_count.entity.SearchCount;
+import server.api.kiwes.domain.search_count.repository.SearchCountRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +25,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class SearchService {
     private final ClubRepository clubRepository;
+    private final SearchCountRepository searchCountRepository;
+
     public List<SearchResponseDto> search(String keyword, Member member) {
         List<SearchResponseDto> searchResults = clubRepository.findByTitleContaining(keyword).stream().map(club -> SearchResponseDto.of(club, member)).collect(Collectors.toList());
         List<SearchResponseDto> responseDtos = new ArrayList<>();
@@ -60,7 +67,37 @@ public class SearchService {
             responseDtos.add(searchResult);
         }
 
-
+        saveSearchHistory(keyword);
         return responseDtos;
+    }
+
+    /**
+     * 인기검색어를 위해 검색어 저장
+     */
+    private void saveSearchHistory(String keyword){
+        Optional<SearchCount> search = searchCountRepository.findBySearchWordIgnoreCaseAndDate(keyword, LocalDate.now());
+
+        if(search.isEmpty()){
+            SearchCount searchCount = SearchCount.builder()
+                    .date(LocalDate.now())
+                    .searchWord(keyword)
+                    .build();
+            searchCountRepository.save(searchCount);
+            return;
+        }
+
+        search.get().addCount();
+    }
+
+    /**
+     * 인기검색어 5개 뽑아 리턴
+     */
+    public List<String> getPopularSearchKeyword() {
+
+        return searchCountRepository.findAllGroupByKeyword()
+                .stream()
+                .limit(5)
+                .map(SearchCountResultDto::getKeyword)
+                .collect(Collectors.toList());
     }
 }

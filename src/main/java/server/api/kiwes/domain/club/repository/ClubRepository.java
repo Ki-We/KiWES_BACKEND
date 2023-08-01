@@ -33,4 +33,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findActivatedClubsOrderByDueTo(@Param("status") ClubStatus status);
 
     List<Club> findByTitleContaining(String keyword);
+
+    @Query(nativeQuery = true,
+    value = "select * from Club c order by c.heart_cnt desc limit 5")
+    List<Club> findAllOrderByHeartCnt();
 }
