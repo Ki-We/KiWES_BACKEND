@@ -19,10 +19,14 @@ import server.api.kiwes.domain.language.language.LanguageRepository;
 import server.api.kiwes.domain.language.type.LanguageType;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
+import server.api.kiwes.domain.member_category.entity.MemberCategory;
+import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 import server.api.kiwes.response.BizException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -120,6 +124,94 @@ public class ClubSortService {
         return allByLanguageIds;
 
 
+    }
+
+    /**
+     * 추천 모임
+     */
+
+    public List<ClubSortResponseDto> getClubByRecommend() {
+
+        // 카테고리 id list
+        Member member = memberService.getLoggedInMember();
+
+        List<String> languages = new ArrayList<>();
+
+        List<MemberLanguage> myLanguages = member.getLanguages();
+
+        // memberlanguage to String
+        for (MemberLanguage memberLanguage : myLanguages) {
+            LanguageType name = memberLanguage.getLanguage().getName();
+            languages.add(name.getName());
+        }
+
+        List<MemberCategory> myCategories = member.getCategories();
+
+        for (MemberCategory myCategory : myCategories) {
+            CategoryType name = myCategory.getCategory().getName();
+            languages.add(name.getName());
+        }
+
+        List<Long> clubIds = new ArrayList<>();
+
+        for (String languageString : languages) {
+            LanguageType type = LanguageType.valueOf(languageString);
+            Language language = languageRepository.findByName(type);
+            clubIds.add(language.getId());
+        }
+
+        List<ClubSortResponseDto> allByLanguageIds = clubLanguageRepository.findAllByCategoryIds(clubIds);
+        for (ClubSortResponseDto allByLanguageId : allByLanguageIds) {
+            Club club = findById(allByLanguageId.getClubId());
+
+            allByLanguageId.setLanguages(club.getLanguages());
+
+            if (club.getHearts().size() > 0) {
+                club.getHearts().forEach(heartMember -> {
+                    if (heartMember.getId().equals(member.getId())) {
+                        allByLanguageId.setHeart(true);
+                    }
+                });
+            } else{
+                allByLanguageId.setHeart(false);
+            }
+        }
+
+        List<String> newlanguages = new ArrayList<>();
+
+        List<MemberLanguage> newmyLanguages = member.getLanguages();
+
+        // memberlanguage to String
+        for (MemberLanguage memberLanguage : newmyLanguages) {
+            LanguageType name = memberLanguage.getLanguage().getName();
+            newlanguages.add(name.getName());
+        }
+
+        allByLanguageIds.addAll(getClubByLanguages(newlanguages));
+
+        List<String> newCategories = new ArrayList<>();
+
+        List<MemberCategory> newmyCategories = member.getCategories();
+
+        // memberlanguage to String
+        for (MemberCategory memberLanguage : newmyCategories) {
+            CategoryType name = memberLanguage.getCategory().getName();
+            newlanguages.add(name.getName());
+        }
+
+        allByLanguageIds.addAll(getClubByLanguages(newlanguages));
+
+        Map<Long, ClubSortResponseDto> multi = new HashMap();
+
+        for (ClubSortResponseDto allByLanguageId : allByLanguageIds) {
+            multi.put(allByLanguageId.getClubId(),allByLanguageId);
+        }
+
+        List<ClubSortResponseDto> deduplicated = new ArrayList<>();
+
+        deduplicated.addAll(multi.values());
+
+        return deduplicated;
     }
 
 
