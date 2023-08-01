@@ -20,7 +20,7 @@ public enum ClubResponseType implements BaseResponseType {
     APPROVAL_LIST_GET_SUCCEED(20109, "승인관련 리스트 리턴 성공", HttpStatus.OK),
     CLUB_SORT_BY_CATEGORY_SUCCESS(20110, "카테고리별 모임 조회 성공", HttpStatus.OK),
     CLUB_SORT_BY_LANGUAGE_SUCCESS(20111, "언어별 모임 조회 성공", HttpStatus.OK),
-    CLUB_SORT_BY_RECOMMEND_SUCCESS(20112, "추천 모임 조회 성공", HttpStatus.OK),
+    POPULAR_CLUBS(20112, "인기 모임 조회", HttpStatus.OK),
 
     CLUB_NOT_EXIST(40101, "clubId와 일치하는 모임이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     ALREADY_APPLIED(40102, "호스트이거나 이미 참여신청함.", HttpStatus.BAD_REQUEST),

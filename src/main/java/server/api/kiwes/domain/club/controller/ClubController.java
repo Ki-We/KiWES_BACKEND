@@ -199,23 +199,24 @@ public class ClubController {
 
     @ApiOperation(value = "카테고리별 모임", notes = "카테고리별 모임 조회")
     @PostMapping("/category")
-    public ApiResponse<List<ClubSortResponseDto>> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+    public ApiResponse<Object> sortByCategories(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
         return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_CATEGORY_SUCCESS,
                 clubSortService.getClubByCategory(clubSortRequestDto.getSortedBy()));
     }
 
     @ApiOperation(value = "언어별 모임", notes = "언어별 모임 조회")
     @PostMapping("/language")
-    public ApiResponse<List<ClubSortResponseDto>> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
+    public ApiResponse<Object> sortByLanguages(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
         return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_LANGUAGE_SUCCESS,
                 clubSortService.getClubByLanguages(clubSortRequestDto.getSortedBy()));
     }
 
-    @ApiOperation(value = "추천 모임", notes = "추천 모임 조회")
-    @PostMapping("/recommend")
-    public ApiResponse<List<ClubSortResponseDto>> sortByRecommend(@RequestBody ClubSortRequestDto clubSortRequestDto ) {
-        return ApiResponse.of(ClubResponseType.CLUB_SORT_BY_RECOMMEND_SUCCESS,
-                clubSortService.getClubByRecommend());
+    @ApiOperation(value = "인기 모임", notes = "인기 모임 조회 5개")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20112, message = "인기 모임 조회 성공"),
+    })
+    @GetMapping("/popular")
+    public ApiResponse<List<ClubPopularEachResponseDto>> getPopularClubs(){
+        return ApiResponse.of(ClubResponseType.POPULAR_CLUBS, clubService.getPopularClubs(memberService.getLoggedInMember()));
     }
-
 }
