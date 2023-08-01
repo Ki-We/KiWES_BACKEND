@@ -10,6 +10,7 @@ import server.api.kiwes.domain.club.constant.ClubResponseType;
 import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
 import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
 import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
+import server.api.kiwes.domain.club.dto.ClubPopularEachResponseDto;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.repository.ClubRepository;
 import server.api.kiwes.domain.club_category.entity.ClubCategory;
@@ -18,6 +19,9 @@ import server.api.kiwes.domain.club_language.entity.ClubLanguage;
 import server.api.kiwes.domain.club_language.repository.ClubLanguageRepository;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
+import server.api.kiwes.domain.heart.constant.HeartStatus;
+import server.api.kiwes.domain.heart.entity.Heart;
+import server.api.kiwes.domain.heart.repository.HeartRepository;
 import server.api.kiwes.domain.language.entity.Language;
 import server.api.kiwes.domain.language.language.LanguageRepository;
 import server.api.kiwes.domain.language.type.LanguageType;
@@ -27,6 +31,7 @@ import server.api.kiwes.response.BizException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,6 +43,7 @@ public class ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ClubLanguageRepository clubLanguageRepository;
     private final ClubCategoryRepository clubCategoryRepository;
+    private final HeartRepository heartRepository;
 
     /**
      * club id를 통해 club 정보 불러오기
@@ -192,5 +198,23 @@ public class ClubService {
     public void kickMember(ClubMember clubApplicant, Club club) {
         clubMemberRepository.delete(clubApplicant);
         club.subCurrentPeople();
+    }
+
+    /**
+     * 인기 모임 조회 (5개)
+     */
+    public List<ClubPopularEachResponseDto> getPopularClubs(Member member) {
+        List<ClubPopularEachResponseDto> response = new ArrayList<>();
+
+        for(Club club : clubRepository.findAllOrderByHeartCnt()){
+            ClubPopularEachResponseDto each = ClubPopularEachResponseDto.of(club);
+            each.setHostProfileImg(member.getProfileImg());
+
+            Optional<Heart> heart = heartRepository.findByClubAndMember(club, member);
+            each.setIsHeart(heart.isPresent() ? heart.get().getStatus() : HeartStatus.NO);
+
+            response.add(each);
+        }
+        return response;
     }
 }

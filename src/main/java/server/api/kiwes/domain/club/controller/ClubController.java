@@ -6,11 +6,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.club.constant.ClubResponseType;
-import server.api.kiwes.domain.club.dto.ClubArticleRequestDto;
-import server.api.kiwes.domain.club.dto.ClubCreatedResponseDto;
-import server.api.kiwes.domain.club.dto.ClubIdResponseDto;
-import server.api.kiwes.domain.club.dto.ClubJoinedResponseDto;
-import server.api.kiwes.domain.club.dto.ClubSortRequestDto;
+import server.api.kiwes.domain.club.dto.*;
 import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club.service.ClubService;
 import server.api.kiwes.domain.club.service.ClubSortService;
@@ -22,6 +18,7 @@ import server.api.kiwes.domain.qna.constant.QnaResponseType;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -214,4 +211,12 @@ public class ClubController {
                 clubSortService.getClubByLanguages(clubSortRequestDto.getSortedBy()));
     }
 
+    @ApiOperation(value = "인기 모임", notes = "인기 모임 조회 5개")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20112, message = "인기 모임 조회 성공"),
+    })
+    @GetMapping("/popular")
+    public ApiResponse<List<ClubPopularEachResponseDto>> getPopularClubs(){
+        return ApiResponse.of(ClubResponseType.POPULAR_CLUBS, clubService.getPopularClubs(memberService.getLoggedInMember()));
+    }
 }
