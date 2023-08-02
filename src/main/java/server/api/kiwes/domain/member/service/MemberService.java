@@ -4,20 +4,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import server.api.kiwes.domain.club.entity.Club;
 import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.MyPageResponse;
 import server.api.kiwes.domain.member.dto.MypageOpenedClubsResponseDto;
 import server.api.kiwes.domain.member.dto.MypageParticipatingClubsResponseDto;
+import server.api.kiwes.domain.member.dto.MypageReviewResponseDto;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
+import server.api.kiwes.domain.review.entity.Review;
 import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -119,6 +123,17 @@ public class MemberService {
 
         return clubMemberRepository.findByMemberAndIsHost(member, true).stream()
                 .map(MypageOpenedClubsResponseDto::of)
+                .collect(Collectors.toList());
+
+    }
+
+    /**
+     * 마이페이지 - 후기
+     */
+    public List<MypageReviewResponseDto> getMypageReviews(Member member) {
+        return clubMemberRepository.findByMember(member).stream()
+                .flatMap(clubMember -> clubMember.getClub().getReviews().stream())
+                .map(review -> MypageReviewResponseDto.of(review, member))
                 .collect(Collectors.toList());
 
     }

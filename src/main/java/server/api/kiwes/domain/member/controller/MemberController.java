@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.ReactiveSetCommands;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -153,10 +154,8 @@ public class MemberController {
             @io.swagger.annotations.ApiResponse(code = 20007, message = "마이페이지 정보 조회 완료")
     })
     @GetMapping("/mypage/review")
-    public ApiResponse<?> getMyReview(){
-        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS);
+    public ApiResponse<List<MypageReviewResponseDto>> getMyReview(){
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.getMypageReviews(memberService.getLoggedInMember()));
     }
-
-
 
 }
