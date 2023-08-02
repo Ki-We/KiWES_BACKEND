@@ -18,4 +18,6 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
     List<Member> findClubMembersWaitingFrom(@Param("club") Club club, @Param("isApproved") Boolean isApproved);
 
     List<ClubMember> findByMember(Member member);
+
+    List<ClubMember> findByMemberAndIsHost(Member member, Boolean isHost);
 }

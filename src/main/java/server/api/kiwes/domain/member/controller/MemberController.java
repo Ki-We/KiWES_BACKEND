@@ -144,8 +144,8 @@ public class MemberController {
             @io.swagger.annotations.ApiResponse(code = 20007, message = "마이페이지 정보 조회 완료")
     })
     @GetMapping("/mypage/opened")
-    public ApiResponse<?> getMyClub(){
-        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS);
+    public ApiResponse<List<MypageOpenedClubsResponseDto>> getMyClub(){
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.getMyOpenedClubs(memberService.getLoggedInMember()));
     }
 
     @ApiOperation(value = "마이페이지 후기", notes = "")

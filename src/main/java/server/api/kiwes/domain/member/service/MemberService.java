@@ -8,6 +8,7 @@ import server.api.kiwes.domain.club_member.entity.ClubMember;
 import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.MyPageResponse;
+import server.api.kiwes.domain.member.dto.MypageOpenedClubsResponseDto;
 import server.api.kiwes.domain.member.dto.MypageParticipatingClubsResponseDto;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
@@ -17,7 +18,6 @@ import server.api.kiwes.response.BizException;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -110,5 +110,16 @@ public class MemberService {
                 .filter(ClubMember::getIsApproved)
                 .map(clubMember -> MypageParticipatingClubsResponseDto.of(clubMember.getClub()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 마이 페이지 - 개설 모임
+     */
+    public List<MypageOpenedClubsResponseDto> getMyOpenedClubs(Member member) {
+
+        return clubMemberRepository.findByMemberAndIsHost(member, true).stream()
+                .map(MypageOpenedClubsResponseDto::of)
+                .collect(Collectors.toList());
+
     }
 }
