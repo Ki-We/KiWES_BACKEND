@@ -4,18 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import server.api.kiwes.domain.club_member.entity.ClubMember;
+import server.api.kiwes.domain.club_member.repository.ClubMemberRepository;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
 import server.api.kiwes.domain.member.dto.MyPageResponse;
+import server.api.kiwes.domain.member.dto.MypageParticipatingClubsResponseDto;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.repository.MemberRepository;
 import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 
 import javax.transaction.Transactional;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +29,7 @@ import java.util.Date;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ClubMemberRepository clubMemberRepository;
 
     /**
      * 로그인된 Member 객체를 리턴하는 함수
@@ -95,6 +101,14 @@ public class MemberService {
     }
 
 
+    /**
+     * 마이페이지 - 참여 모임
+     */
+    public List<MypageParticipatingClubsResponseDto> getMyParticipatingClubs(Member member) {
 
-
+        return clubMemberRepository.findByMember(member).stream()
+                .filter(ClubMember::getIsApproved)
+                .map(clubMember -> MypageParticipatingClubsResponseDto.of(clubMember.getClub()))
+                .collect(Collectors.toList());
+    }
 }

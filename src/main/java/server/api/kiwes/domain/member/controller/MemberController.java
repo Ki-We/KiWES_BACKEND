@@ -10,8 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.kiwes.domain.member.constant.MemberResponseType;
-import server.api.kiwes.domain.member.dto.AdditionInfoRequest;
-import server.api.kiwes.domain.member.dto.RefreshTokenRequest;
+import server.api.kiwes.domain.member.dto.*;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
 import server.api.kiwes.global.aws.PreSignedUrlService;
@@ -24,6 +23,7 @@ import server.api.kiwes.response.foo.FooResponseType;
 import javax.validation.Valid;
 
 import java.text.ParseException;
+import java.util.List;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -62,7 +62,7 @@ public class MemberController {
             @io.swagger.annotations.ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
     })
     @PostMapping("/auth/kakao")
-    public ApiResponse<Object> login(
+    public ApiResponse<LoginResponse> login(
             @RequestHeader(name = "Authorization") String token
     ) {
 
@@ -83,10 +83,7 @@ public class MemberController {
             @io.swagger.annotations.ApiResponse(code = 40001, message = "parameter 누락 (400 BAD_REQUEST)")
     })
     @PostMapping("/additional-info")
-    public ApiResponse<Object> signUp(
-            @Parameter(name = "추가 정보 입력 객체", description = "회원가입시 추가정보 입력 위한 객체", in = QUERY, required = false) @RequestBody(required = false) AdditionInfoRequest additionInfoRequest
-    ) {
-
+    public ApiResponse<Object> signUp(@Parameter(name = "추가 정보 입력 객체", description = "회원가입시 추가정보 입력 위한 객체", in = QUERY, required = false) @RequestBody(required = false) AdditionInfoRequest additionInfoRequest) {
 
         if (additionInfoRequest == null || additionInfoRequest.equals("error")) {
             log.error(FooResponseType.INVALID_PARAMETER.getMessage());
@@ -101,40 +98,27 @@ public class MemberController {
 
     @ApiOperation(value = "토큰 재발급", notes = "토큰을 재발급합니다.")
     @PostMapping("/auth/refresh")
-    public ApiResponse<Object> tokenRefresh(
-
-            @RequestBody RefreshTokenRequest refreshTokenRequest
-
-    ) {
-
+    public ApiResponse<RefreshTokenResponse> tokenRefresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ApiResponse.of(MemberResponseType.TOKEN_REFRESH_SUCCESS,authenticationService.refreshToken(refreshTokenRequest));
-
     }
 
 
     @ApiOperation(value = "닉네임 중복검사", notes = "중복되는 닉네임이 있는지 검사합니다..")
     @PostMapping("/nickname")
-    public ApiResponse<Object> nickname(
-            @RequestBody String nickname
-    ) {
+    public ApiResponse<String> nickname(@RequestBody String nickname) {
         return ApiResponse.of(MemberResponseType.NICKNAME_DUPLICATE_SUCCESS, memberService.nicknameDuplicateCheck(nickname));
     }
 
     @ApiOperation(value = "자기소개 수정", notes = "자기소개를 수정합니다.")
     @PostMapping("/mypage/introduction")
-    public ApiResponse<Object> introduction(
-            @RequestBody String introduction
-    ) {
+    public ApiResponse<String> introduction(@RequestBody String introduction) {
         return ApiResponse.of(MemberResponseType.INTRODUCTION_UPDATE_SUCCESS, memberService.updateIntroduction(introduction));
     }
 
     @ApiOperation(value = "프로필 이미지 수정", notes = "프로필 이미지 변경을 위한 presigned-url 을 받아옵니다.")
 
     @GetMapping("mypage/profileImg")
-    public ApiResponse<Object> profileImg(
-
-    ) {
-
+    public ApiResponse<String> profileImg() {
         String nickname = memberService.changeProfileImg() + ".jpg";
         return ApiResponse.of(MemberResponseType.PROFILE_IMG_SUCCESS, preSignedUrlService.getPreSignedUrl("profileimg/", nickname));
 
@@ -142,13 +126,36 @@ public class MemberController {
 
     @ApiOperation(value = "마이페이지 정보 ", notes = "마이페이지 내 정보 가져오기.")
     @GetMapping("/mypage")
-    public ApiResponse<Object> myPage(
-    ) throws ParseException {
+    public ApiResponse<MyPageResponse> myPage() throws ParseException {
         return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.myPage());
-
     }
 
+    @ApiOperation(value = "마이페이지 참여모임", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20007, message = "마이페이지 정보 조회 완료")
+    })
+    @GetMapping("/mypage/participation")
+    public ApiResponse<List<MypageParticipatingClubsResponseDto>> getMyParticipation(){
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS, memberService.getMyParticipatingClubs(memberService.getLoggedInMember()));
+    }
 
+    @ApiOperation(value = "마이페이지 개설모임", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20007, message = "마이페이지 정보 조회 완료")
+    })
+    @GetMapping("/mypage/opened")
+    public ApiResponse<?> getMyClub(){
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS);
+    }
+
+    @ApiOperation(value = "마이페이지 후기", notes = "")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20007, message = "마이페이지 정보 조회 완료")
+    })
+    @GetMapping("/mypage/review")
+    public ApiResponse<?> getMyReview(){
+        return ApiResponse.of(MemberResponseType.MYPAGE_LOAD_SUCCESS);
+    }
 
 
 
