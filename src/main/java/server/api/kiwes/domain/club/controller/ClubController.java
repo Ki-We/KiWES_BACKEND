@@ -15,6 +15,7 @@ import server.api.kiwes.domain.club_member.service.ClubMemberService;
 import server.api.kiwes.domain.member.entity.Member;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.qna.constant.QnaResponseType;
+import server.api.kiwes.global.aws.PreSignedUrlService;
 import server.api.kiwes.response.ApiResponse;
 import server.api.kiwes.response.BizException;
 
@@ -31,6 +32,7 @@ public class ClubController {
     private final MemberService memberService;
     private final ClubMemberService clubMemberService;
     private final ClubSortService clubSortService;
+    private final PreSignedUrlService preSignedUrlService;
 
     private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2}$";
 
@@ -53,7 +55,21 @@ public class ClubController {
 
         return ApiResponse.of(ClubResponseType.POST_SUCCESS, response);
     }
+    
+    @ApiOperation(value = "모임 글 작성 시 썸네일 이미지 업로드 링크 반환", notes = "응답받은 링크에 파일과 함께 PUT요청. 파일명 상관없음.\n POST /article 요청 먼저 하고, clubId 반환 받은 후에 요청")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 20113, message = "모임 썸네일 이미지 업로드 프리사인url 리턴 성공"),
+    })
+    @GetMapping("/article/presigned-url")
+    public ApiResponse<String> getUploadClubThumbnailImagePresignedUrl(@RequestParam Long clubId){
+        Member member = memberService.getLoggedInMember();
+        Club club = clubService.findById(clubId);
+        String url = preSignedUrlService.getPreSignedUrl("clubThumbnail/", club.getUuid());
+        clubService.setClubThumbnailImageUrl(club);
 
+        return ApiResponse.of(ClubResponseType.CLUB_THUMBNAIL_IMG_PRESIGNED_URL, url);
+    }
+    
     @ApiOperation(value = "모임 글 삭제", notes = "")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 20102, message = "모임 모집 글 삭제 성공"),

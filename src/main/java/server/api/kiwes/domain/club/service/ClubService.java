@@ -1,6 +1,7 @@
 package server.api.kiwes.domain.club.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.kiwes.domain.category.entity.Category;
@@ -44,6 +45,13 @@ public class ClubService {
     private final ClubLanguageRepository clubLanguageRepository;
     private final ClubCategoryRepository clubCategoryRepository;
     private final HeartRepository heartRepository;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.region.static}")
+    private String region;
+
 
     /**
      * club id를 통해 club 정보 불러오기
@@ -216,5 +224,18 @@ public class ClubService {
             response.add(each);
         }
         return response;
+    }
+
+    /**
+     * 썸네일이미지 수정
+     */
+    public void setClubThumbnailImageUrl(Club club){
+        String url = "https://" +
+                bucket +
+                ".s3." +
+                region +
+                ".amazonaws.com/clubThumbnail/" +
+                club.getUuid();
+        club.setThumbnailUrl(url);
     }
 }
