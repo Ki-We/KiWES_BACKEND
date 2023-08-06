@@ -15,6 +15,7 @@ import server.api.kiwes.domain.member.dto.RefreshTokenRequest;
 import server.api.kiwes.domain.member.service.MemberService;
 import server.api.kiwes.domain.member.service.auth.MemberAuthenticationService;
 import server.api.kiwes.global.aws.PreSignedUrlService;
+import server.api.kiwes.global.dto.ResponseDto;
 import server.api.kiwes.global.jwt.TokenProvider;
 import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 import java.text.ParseException;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
+import static server.api.kiwes.domain.member.constant.MemberResponseType.LOGOUT_SUCCESS;
 
 @RestController
 @AllArgsConstructor
@@ -148,8 +150,26 @@ public class MemberController {
 
     }
 
+    @ApiOperation(value = "로그아웃", notes = "로그아웃을 합니다.")
+    @PostMapping("/auth/logout")
+    public ApiResponse<Object> logout( ){
+        return ApiResponse.of(MemberResponseType.LOGOUT_SUCCESS,authenticationService.logout());
+    }
+
+    @ApiOperation(value = "회원 탈퇴", notes = "회원탈퇴를 합니다.")
+    @PostMapping("/auth/quit")
+    public ApiResponse<Object> quit( ){
+        return ApiResponse.of(MemberResponseType.LOGOUT_SUCCESS,authenticationService.quit());
+    }
 
 
+
+
+//    @GetMapping("/login")
+//    public String showLoginPage() {
+//        // 로그인 페이지를 보여주는 코드 작성
+//        return "login"; // 예시로 "login"을 리턴하면 "login.jsp" 등의 뷰를 템플릿 엔진으로 렌더링합니다.
+//    }
 
 
 }

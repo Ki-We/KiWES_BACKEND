@@ -29,10 +29,12 @@ import server.api.kiwes.domain.member_language.entity.MemberLanguage;
 import server.api.kiwes.domain.member_language.repository.MemberLanguageRepository;
 import server.api.kiwes.global.entity.Gender;
 import server.api.kiwes.global.jwt.TokenProvider;
+import server.api.kiwes.global.security.util.SecurityUtils;
 import server.api.kiwes.response.BizException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import static server.api.kiwes.domain.member.constant.MemberResponseType.*;
-import static server.api.kiwes.domain.member.constant.MemberServiceMessage.LOGIN_URL;
+import static server.api.kiwes.domain.member.constant.MemberServiceMessage.*;
 import static server.api.kiwes.domain.member.constant.Role.ROLE_USER;
 
 @Service
@@ -270,6 +272,19 @@ public class MemberAuthenticationService {
             }
 
             return access_Token;
+    }
+
+    public String logout() {
+
+        Member user = validateService.validateEmail(SecurityUtils.getLoggedInUser().getEmail());
+        refreshTokenRepository.deleteById(user.getId());
+        return "hi";
+    }
+
+    public String quit() {
+        Member user = validateService.validateEmail(SecurityUtils.getLoggedInUser().getEmail());
+        memberRepository.delete(user);
+        return "bye";
     }
 
 
